@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="/css/style.css">
+<div class="container">
+    <div class="row">
+        <div class="ml-auto m-1">
+            <a href="thongtin" class="mr-3">Giới thiệu <i class="fas fa-info-circle"></i></a>
+            <% if (user) { %>
+              <a id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i><%=user.fullname %></i></a>
+  						<div class="dropdown-menu" aria-labelledby="profile">
+  							<a href="/thongtintaikhoan-0-<%= user.id%>" class="btn dropdown-item">Thông tin tài khoản</a>
+  							<a href="/dangbai/1" class="btn dropdown-item">Đăng bài</a>
+  							<a href="/dangbai/2" class="btn dropdown-item">Đăng nhu cầu</a>
+  							<div class="dropdown-divider"></div>
+  							<a class="btn dropdown-item" href="/dangxuat">Đăng xuất</a>
+  						</div>
+            <% } else { %>
+            	<a href="/dangnhap" class="mr-3">Đăng nhập <i class="fas fa-sign-in-alt"></i></a>
+            	<a href="/dangky">Đăng ký <i class="fas fa-user-plus"></i></a>
+            <% } %>
+        </div>
+    </div>
+</div>

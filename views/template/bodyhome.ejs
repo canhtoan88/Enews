@@ -1,0 +1,173 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <!-- Set newest article -->
+                <div class="col-9">
+                    <h5 class="mt-2"><span class="badge badge-secondary">Mới nhất</span></h5>
+                    <div class="card mt-1 text-center hoverable">
+                        <div class="card-body">
+                            <!--Grid row-->
+                            <div class="row">
+
+                                <!--Grid column-->
+                                <div class="col-md-4 offset-md-1 mx-3 my-3">
+                                    <!--Featured image-->
+                                    <div class="view overlay">
+                                        <img style="max-height: 300px" src="<%= allArticles[0].imagelink %>" class="img-fluid" alt="<%= allArticles[0].title %>">
+                                        <a>
+                                            <div class="mask rgba-white-slight waves-effect waves-light"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--Grid column-->
+
+                                <!--Grid column-->
+                                <div class="col-md-7 text-left ml-3 mt-3">
+                                    <!--Excerpt-->
+                                    <a href="/theloai/<%= allArticles[0].kindurl %>" class="green-text">
+                                        <h6 class="font-bold pb-1"><i class="categoryIcon"><%= allArticles[0].kind %></i> <span class="categoryName"><%= allArticles[0].kindname %></span></h6>
+                                    </a>
+                                    <h4 class="mb-4"><strong><a href="/baiviet/<%= allArticles[0].titleurl %>-<%= allArticles[0].id %>"><%= allArticles[0].title %></a></strong></h4>
+                                    <p><%- allArticles[0].content.slice(0, 300) %></p>
+                                    <p><%= moment(allArticles[0].date).calendar() %></p>
+                                    <a href="/baiviet/<%= allArticles[0].titleurl %>-<%= allArticles[0].id %>" class="btn btn-dark waves-effect waves-light">Xem chi tiết</a><span class="float-right"><i class="far fa-eye"></i> <%= allArticles[0].views %></span>
+                                </div>
+                                <!--Grid column-->
+                            </div>
+                            <!--Grid row-->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Set new article continue -->
+                <div class="col-3">
+                    <div class="scrollspy-example mt-5">
+                        <% for (let i = 1; i <= 10; i++) { -%>
+                            <p><a style="text-decoration: none" href="baiviet/<%= allArticles[i].titleurl %>-<%= allArticles[i].id %>"><%= allArticles[i].title %></a></p>
+                            <% if (i < 10) { %>
+                                <hr width="80%" style="border-style: dashed">
+                            <% } %>
+                        <% } -%>
+                    </div>
+                </div>
+            </div>
+
+            <hr width="80%" style="border-style: dotted">
+
+            <!-- Set articles follow category -->
+            <% for (let i = 0; i < 4; i++) { -%>
+                <div class="alert alert-info" role="alert">
+                    <span class="alert-link"><%= i %></span> - 
+                    <a style="text-decoration: none" href="/theloai/<%= allArticles[21+i*4].kindurl %>" class="topic"><i>Xem thêm</i></a>
+                </div>
+                <div class="row">
+                <% for (let j = i * 4 + 21; j <= (i * 4 + 24); j++) { -%>
+                    <div class="col-6">
+                        <div class="card mb-3 hoverable">
+                            <div class="card-body">
+                                <a class="mx-1" style="text-decoration: none;" href="/baiviet/<%= allArticles[j].titleurl %>-<%= allArticles[j].id %>"><%= allArticles[j].title %></a>
+                                <!--Grid row-->
+                                <div class="row">
+
+                                    <!--Grid column-->
+                                    <div class="col-md-4 offset-md-1 mx-1 my-2">
+                                        <!--Featured image-->
+                                        <div class="view overlay">
+                                            <a href="baiviet/<%= allArticles[j].titleurl %>-<%= allArticles[j].id%>">
+                                                <img style="max-height: 300px" src="<%= allArticles[j].imagelink %>" class="img-fluid" alt="<%= allArticles[j].title %>">
+                                            </a>
+                                            <a>
+                                                <div class="mask rgba-white-slight waves-effect waves-light"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!--Grid column-->
+
+                                    <!--Grid column-->
+                                    <div class="col-md-7 text-left green-text">
+                                        <p><%- allArticles[j].content.slice(0, 100) %>...</p>
+                                    </div>
+                                    <!--Grid column-->
+                                </div>
+                                <!--Grid row-->
+                            </div>
+                        </div>
+                    </div>
+                <% } -%>
+                </div>
+            <% } -%>
+        </div>
+
+        <!-- Set interestest articles -->
+        <div class="col-md-3">
+            <h5 class="bg-info mt-3 py-1 text-center">HOT trong tháng</h5>
+            <% for (let i = 11; i <= 20; i++) { -%>
+                <div class="card mt-3 text-center hoverable">
+                    <div class="card-body">
+                        <!--Grid row-->
+                        <div class="row">
+                            <!--Grid column-->
+                            <div class="col-md-4">
+                                <!--Featured image-->
+                                <div class="view overlay">
+                                    <a href="/baiviet/<%= allArticles[i].titleurl%>-<%= allArticles[i].id%>">
+                                        <img src="<%= allArticles[i].imagelink%>" class="img-fluid" alt="<%= allArticles[i].title%>">
+                                    </a>
+                                </div>
+                            </div>
+                            <!--Grid column-->
+
+                            <!--Grid column-->
+                            <div class="col-md-8 text-left">
+                                <!--Excerpt-->
+                                <a href="/theloai/<%= allArticles[i].kindurl%>" class="green-text">
+                                    <h6 class="font-bold pb-1"><i class="categoryIcon"><%= allArticles[i].kind %></i> <%= allArticles[i].kindname %></h6>
+                                </a>
+                                <h6 class="mb-2"><strong>
+                                    <a href="/baiviet/<%= allArticles[i].titleurl%>-<%= allArticles[i].id %>">
+                                        <%= allArticles[i].title %>
+                                    </a></strong>
+                                </h6>
+                                <span class="float-right"><i class="far fa-eye"></i> <%= allArticles[i].views %></span>
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                        <!--Grid row-->
+                    </div>
+                </div>
+            <% } -%>
+        </div>
+    </div>
+</div>
+
+<script>
+    const categoryIcon  = document.querySelectorAll('.categoryIcon');
+
+    var classIcon = '';
+    for (let i = 0; i < categoryIcon.length; i++){
+        switch (categoryIcon[i].textContent - 1) {
+            case 0:
+                classIcon = 'fa fa-desktop';
+                break;
+            case 1:
+                classIcon = 'fas fa-futbol';
+                break;
+            case 2: 
+                classIcon = 'fas fa-plane-departure'
+                break;
+            default: 
+                classIcon = 'fas fa-heartbeat'
+                break;
+        }
+        categoryIcon[i].className   = classIcon;
+        categoryIcon[i].textContent = '';
+    }
+
+
+    const alertCategory = document.querySelectorAll('.alert-link');
+    const tabs          = document.querySelectorAll('.kind');
+    for (let i = 0; i < alertCategory.length; i++) {
+        alertCategory[i].textContent = tabs[alertCategory[i].textContent].textContent;
+    }
+</script>

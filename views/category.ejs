@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%include template/head %>
+	<title>Thể loại</title>
+	<link rel="icon" href="../img/icon.png">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+	<%include template/header %>
+	<%include template/menu %>
+	<%include template/results%>
+	<%include template/footer%>
+	<%include template/script%>
+    <script>
+    	const tabs = document.querySelectorAll('.kind');
+    	tabs[<%= tab %> - 1].classList.add('active');
+    	title = tabs[<%= tab %> - 1].textContent;
+    	document.title = title;
+
+    	// Set category icon
+    	const categoryIcon = document.querySelectorAll('.categoryIcon');
+    	var classIcon = '';
+    	switch (<%= tab %> - 1) {
+    		case 0:
+    			classIcon = 'fa fa-desktop';
+    			break;
+    		case 1:
+    			classIcon = 'fas fa-futbol';
+    			break;
+    		case 2: 
+    			classIcon = 'fas fa-plane-departure'
+    			break;
+    		default: 
+    			classIcon = 'fas fa-heartbeat'
+    			break;
+    	}
+    	for (let i = 0; i < categoryIcon.length; i++){
+            categoryIcon[i].textContent = '';
+    		categoryIcon[i].className = classIcon;
+    	}
+
+    	//Set category name
+    	const categoryName = document.querySelectorAll('.categoryName');
+    	for (let i = 0; i < categoryName.length; i++){
+    		categoryName[i].textContent = title;
+    	}
+    </script>
+</body>
+</html>

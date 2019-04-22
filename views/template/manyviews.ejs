@@ -1,0 +1,43 @@
+<link rel="stylesheet" type="text/css" href="../css/owlcarousel/docs.theme.min.css">
+<link rel="stylesheet" type="text/css" href="../css/owlcarousel/owl.carousel.min.css">
+<link rel="stylesheet" type="text/css" href="../css/owlcarousel/owl.theme.default.min.css">
+<div class="container">
+	<section id="demos">
+      	<div class="row">
+	        <div class="large-12 columns">
+	          	<div class="owl-carousel owl-theme">
+		            <div class="item">
+		              	<h4>1</h4>
+		            </div>
+		            <div class="item">
+		              	<h4>2</h4>
+		            </div>
+	          	</div>
+	        </div>
+      	</div>
+    </section>
+</div>
+
+<script src="../js/owl.carousel.min.js" type="text/javascript" charset="utf-8" async defer></script>
+
+<script>
+$(document).ready(function() {
+  	var owl = $('.owl-carousel');
+  	owl.owlCarousel({
+	    margin: 10,
+	    nav: true,
+	    loop: true,
+	    responsive: {
+	      	0: {
+	        	items: 1
+	      	},
+	      	600: {
+	        	items: 3
+	      	},
+	      	1000: {
+	        	items: 5
+	      	}
+	    }
+  	})
+})
+</script>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<% include template/head %>
+	<meta http-equiv="Refresh" content="7;URL=https://localhost:3000/index">
+	<title>IShare</title>
+ 
+    <style>
+ 
+        body{
+            font-family: 'Noto Sans', Arial, serif;
+            font-weight: 400;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            line-height: 1.618em;
+            background: #464646 url('img/lake.jpg') center center no-repeat fixed;
+            background-size: cover;
+        }
+        h2{
+            font-family: 'Noto Sans', Arial, serif;
+            font-weight: 700;
+            font-size:40px;
+            line-height: 1.618em;
+        }
+        section{
+            max-width:800px;
+            margin:8% auto 1em auto;
+            background-color:#222;
+            opacity: 0.8;
+            filter: alpha(opacity=80); /* For IE8 and earlier */
+            color:#fff;
+            padding:1em 5%;
+        }
+ 
+        a{
+            color: #00CC66;
+        }
+        a:focus{
+            outline:none;
+            outline-offset:inherit;
+        }
+        @media (max-device-width: 1027px) {
+ 
+            body{
+                text-align:center;
+                font-size:larger;
+            }
+            section{
+                max-width: 90%;
+            }
+ 
+        }
+ 
+        @media (max-device-width: 640px) {
+            section{
+                max-width: 97%;
+            }
+ 
+        }
+    </style>
+</head>
+<body>
+	<section>
+	    <h2><%- content %></h2>
+	 
+	    <h3>Bạn sẽ được chuyển về Trang chủ trong <span id="timer" style="color: green"></span> giây nữa</h3>
+	 
+	    <p>Hoặc bạn có thể click vào <a href="/index">đây</a> để chuyển về ngay lập tức</p>
+	</section>
+
+	<script type="text/javascript">
+		var i = 7;
+		function countdown() {
+			var time = document.querySelector('#timer');
+			time.innerHTML = i;
+			i--;
+			setTimeout('countdown()', 1000);
+		}
+		countdown();
+	</script>
+</body>
+</html>

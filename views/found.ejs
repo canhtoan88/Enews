@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%include template/head %>
+    <link rel="icon" href="img/icon.png">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>IShare - Chia sẻ tài liệu sinh viên</title>
+  </head>
+  <body>
+    <!--Start header -->
+    <%include template/header%>
+    <!-- End header -->
+
+    <!--Start menu -->
+    <%include template/menu%>
+    <!-- End menu -->
+
+    <!--Start body -->
+    <%include template/results %>
+    <!-- End body -->
+
+    <!--Start footer-->
+    <%include template/footer%>
+    <!-- End footer -->
+
+    <%include template/script%>
+    <script>
+        const categoryIcon = document.querySelectorAll('.categoryIcon');
+        var classIcon = '';
+        for (let i = 0; i < categoryIcon.length; i++){
+            switch (categoryIcon[i].textContent - 1) {
+                case 0:
+                    classIcon = 'fa fa-desktop';
+                    break;
+                case 1:
+                    classIcon = 'fas fa-futbol';
+                    break;
+                case 2: 
+                    classIcon = 'fas fa-plane-departure'
+                    break;
+                default: 
+                    classIcon = 'fas healthbeat'
+                    break;
+            }
+            categoryIcon[i].textContent = '';
+            categoryIcon[i].className = classIcon;
+        }
+
+        // Set search content again
+        document.querySelector('input[name="searchContent"]').value = '<%= searchContent %>';
+    </script>
+  </body>
+</html>

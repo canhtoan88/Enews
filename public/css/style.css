@@ -1,0 +1,10 @@
+.container .row .ml-auto.m-1{
+  font-size: 14px;
+}
+
+a#profile {
+  cursor: pointer;
+}
+a#profile:hover {
+  color: blue;
+}

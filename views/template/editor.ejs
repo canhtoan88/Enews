@@ -1,0 +1,77 @@
+<style type="text/css" media="screen">
+	.ck-editor__editable {
+		min-height: 300px;
+	}
+</style>
+<div class="container mt-3">
+	<form class="form-horizontal" action="/dangbai" method="post" enctype="multipart/form-data">
+		<input type="hidden" id="url3" name="url3" required/>
+		<div class="form-group row">
+			<label class="control-form-label col-sm-3">Tiêu đề:</label>
+		    <div class="col-sm-9 col-xs-9">
+		        <input type="text" name="title" class="form-control" maxlength="40" required/>
+		    </div>
+		</div>
+		<div class="form-group row">
+			<label class="control-form-label col-sm-3">Loại tin tức:</label>
+		    <div class="col-sm-9 col-xs-9">
+		        <select class="form-control" name="kind" required>
+		        	<option value="0">Chọn loại tin tức...</option>
+					<option value="1">Công nghệ</option>
+					<option value="2">Bóng đá</option>
+					<option value="3">Du lịch</option>
+					<option value="4">Sức khoẻ</option>
+				</select>
+		    </div>
+		</div>
+		<div class="form-group row">
+			<label class="control-form-label col-sm-3">Hình ảnh:</label>
+			<div class="col-sm-9 col-xs-9">
+				<input type="file" name="file" accept="image/*" onchange="previewFile()" required/><br />
+				<img src="" height="200" alt="Hình ảnh xem trước ..." style="margin-bottom: 10px"/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="control-form-label col-sm-3">Nội dung:</label>
+			<div class="col-sm-9 col-xs-9">
+				<textarea name="content" id="editor" style="min-height: 400px"></textarea>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="control-form-label col-sm-3"></label>
+			<div class="col-sm-9 col-xs-9">
+				<center>
+					<button type="submit" class="btn btn-success">Đăng bài <i class="far fa-share-square"></i></button>
+					<!-- <button target="_blank" type="button" class="btn btn-success" onclick="send()">Xem trước nội dung <i class="far fa-search"></i></button> -->
+					<button type="reset" class="btn btn-success">Viết lại <i class="far fa-window-restore"></i></button>
+				</center>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/11.1.1/classic/ckeditor.js"></script>
+	
+<script type="text/javascript">
+	ClassicEditor
+            .create( document.querySelector( '#editor' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+</script>
+<script>
+	function previewFile(){
+	   var preview = document.querySelector('img'); //selects the query named img
+	   var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+	   var reader  = new FileReader();
+	   reader.onloadend = function () {
+	       preview.src = reader.result;
+	   }
+	   if (file) {
+	       reader.readAsDataURL(file); //reads the data as a URL
+	   } else {
+	   	//preview.src = "";
+	   }
+	}
+	previewFile();  //calls the function named previewFile()
+</script>

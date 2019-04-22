@@ -1,0 +1,148 @@
+<div class="container mt-1">
+	<nav aria-label="breadcrumb">
+	  <ol class="breadcrumb">
+	    <li class="breadcrumb-item"><a href="/index"><small>IShare</small></a></li>
+	    <li class="breadcrumb-item"><a href="/ban-1"><small><%= article.kindname %></small></a></li>
+	    <li class="breadcrumb-item active" aria-current="page"><small><%= article.title %></small> 
+	    	<% if (num != null) { -%>
+	    		<% if (num == 0) { %>
+	    			<a href="/baiviet/luubaiviet/<%=article.titleurl%>/<%= article.id%>" class="badge badge-pill badge-dark">Lưu bài viết</a>
+	    		<% } else { %>
+	    			<i class="badge badge-pill badge-dark">Đã lưu</i>
+	    		<% } %>
+	    	<% } -%>
+	    </li>
+	  </ol>
+	  <hr width="65%" align="left" style="border-style: dashed; left: 0">
+	</nav>
+	<div class="row">
+		<div class="col-md-8">
+			<!-- article's content -->
+			<h3><%= article.title%></h3>
+			<center><img style="max-height: 500px" src="<%= article.imagelink%>" alt="<%= article.title%>" class="img-fluid"></center>
+			<p>Ngày đăng: <i class="text-success" id="date"><%= moment(article.date).calendar()%></i></p>
+			<div><%- article.content%></div>
+			<hr>
+
+			<!-- Comment's content around -->
+			<% if (comments) { -%>
+				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (<%= comments.length %>)</b></p>
+				<% for (comment of comments) { -%>
+					<div class="containerct">
+					  	<p id="<%= comment.id %>">
+					  		<span style="color: orange;"><%= comment.fullname %></span>
+					  		<i><%= moment(comment.date).calendar()%></i>
+
+						  	<!-- <c:if test="${binhluan.getMaNguoiDung() == manguoidung}">
+						  		<c:if test="${binhluan.getMaBinhLuan() != editmabinhluan}">
+						  			<sup>
+						  				<a href="Comment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}">Xóa</a> ||
+						  				<a href="EditComment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}">Chỉnh sửa</a>
+						  			</sup>
+						  		</c:if>
+  									<c:if test="${binhluan.getMaBinhLuan() == editmabinhluan}">
+  										<form id="editcomment" action="EditComment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}" method="post">
+  										    <div class="form-group">
+  										    	<textarea class="form-control" name="noidungbinhluan" rows="5" minlength="10" maxlength="300" autofocus>${noidungbinhluan}</textarea>
+  										    	<span style="float: right"><input class="btn btn-success" style="margin: 10px 0" type="submit" value="Lưu"/></span>
+  										    	<span style="float: right"><a href="" class="btn btn-success" style="margin: 10px 0" type="button">Hủy</a></span>
+  										  	</div>
+  										</form>
+  							    	</c:if>
+						  	</c:if> -->
+					  	</p>
+					  	<p style="padding: 0 20px">&emsp;&emsp;<%= comment.content %></p>
+					</div>
+				<% } -%>
+			<% } else { -%>
+				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (0)</b></p>
+			<% } -%>
+			<!-- End Comment's content around -->
+
+			<!-- Comment around -->
+			<% if (user) { -%>
+				<form id="comment" action="/baiviet/binhluan/<%= article.id %>" method="post">
+				    <div class="form-group text-right">
+				    	<textarea class="form-control" name="commentContent" rows="4" placeholder="Nhập nội dung bình luận ..." maxlength="300"></textarea>
+				    	<span>
+				    		<input class="btn btn-success" style="margin: 10px 0" type="submit" value="Đăng bình luận"/>
+				    	</span>
+				  	</div>
+				</form>
+			<% } else { -%>
+				<p style="margin-bottom: 16px">Hãy<a href="/dangnhap" class="btn btn-link"><i>đăng nhập</i></a>để bình luận cho bài viết này!! Hoặc<a href="/dangky" class="btn btn-link"><i>đăng ký</i></a>nếu chưa có tài khoản.</p>
+			<% } -%>
+			<!-- End comment around -->
+
+			<!-- The same category -->
+			<div class="alert alert-info" role="alert">
+                <span class="alert-link">Mới nhất</span>
+            </div>
+			<% for (var i = 0; i < 2; i++) { -%>
+				<div class="row">
+					<div class="card-deck-wrapper">
+						<div class="card-deck">
+							<% for (var j = i*3; j < i*3+3; j++) { -%>
+								<div class="card">
+									<a href="baiviet/<%= newArticles[j].titleurl %>-<%= newArticles[j].id %>" title=""><img style="max-height: 200px" class="card-img-top img-fluid" src="<%= newArticles[j].imagelink %>" alt="<%= newArticles[j].title %>"></a>
+									<div class="card-block mx-2">
+										<a href="baiviet/<%= newArticles[j].titleurl %>-<%= newArticles[j].id %>" class="card-title"><%= newArticles[j].title.slice(0, 50) %></a>
+										<p class="card-text"><small class="text-muted"><%= moment(newArticles[j].date).calendar() %></small></p>
+									</div>
+								</div>
+							<% } -%>
+						</div>
+					</div>
+				</div>
+				<% if (i == 0) { %>
+					<br>
+				<% } %>
+				
+			<% } -%>
+			<!-- End the same category -->
+		</div>
+		<div class="col-md-4">
+			<h5 class="bg-warning mt-1 py-1 text-center">Cùng chuyên mục</h5>
+			<% for (var info of similar) { -%>
+				<div class="card mt-3 text-center hoverable">
+	                <div class="card-body">
+	                    <!--Grid row-->
+	                    <div class="row">
+	                        <!--Grid column-->
+	                        <div class="col-md-4">
+	                            <!--Featured image-->
+	                            <div class="view overlay">
+	                            	<a href="/baiviet/<%= info.titleurl%>-<%= info.id%>">
+	                            		<img src="<%= info.imagelink%>" class="img-fluid" alt="<%= info.title%>">
+	                            	</a>
+	                            </div>
+	                        </div>
+	                        <!--Grid column-->
+
+	                        <!--Grid column-->
+	                        <div class="col-md-8 text-left">
+	                            <!--Excerpt-->
+	                            <a href="/theloai/<%= article.kindurl%>" class="green-text">
+	                                <h6 class="font-bold pb-1"><i class="categoryIcon"></i> <%= article.kindname %></h6>
+	                            </a>
+	                            <h6 class="mb-2"><strong>
+	                            	<a href="/baiviet/<%= info.titleurl%>-<%= info.id %>">
+	                            		<%= info.title %>
+		                            </a></strong>
+		                        </h6>
+	                            <span class="text-success"><i class="date2"><%= moment(info.date).calendar() %></i></span>
+	                        </div>
+	                        <!--Grid column-->
+	                    </div>
+	                    <!--Grid row-->
+	                </div>
+	            </div>
+			<% } -%>
+		</div>
+	</div>
+</div>
+
+<script>
+	const kinds = document.querySelectorAll('.kind');
+	kinds[<%= article.kind %> - 1].classList.add('active');
+</script>

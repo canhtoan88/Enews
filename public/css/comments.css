@@ -1,0 +1,41 @@
+@charset "ISO-8859-1";
+.containerct {
+  border: 2px solid #ccc;
+  background-color: #eee;
+  border-radius: 5px;
+  padding: 16px;
+  margin: 16px 0
+}
+
+.containerct::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.containerct img {
+  float: left;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.containerct span {
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+@media (max-width: 500px) {
+  .containerct {
+      text-align: center;
+  }
+  .containerct img {
+      margin: auto;
+      float: none;
+      display: block;
+  }
+}
+
+.vl {
+	border: 1px solid #222;
+    width: 100%;
+}

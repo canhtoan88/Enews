@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%include template/head %>
+	<link rel="icon" href="img/icon.png">
+	<title>Đăng bài</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+	    <div class="row">
+	        <div class="ml-auto m-1">
+	            <a class="btn dropdown-item" href="/admin">Đăng xuất</a>
+	        </div>
+	    </div>
+	</div>
+	<%include template/editor%>
+	<%include template/script%>
+
+	<script type="text/javascript">
+		$('button[type="submit"]').click(function() {
+			if ($('select[name="kind"]').find(":selected").val() == 0) {
+				alert('Chưa chọn thể loại');
+				return false;
+			} 
+			return true;
+		})
+	</script>
+</body>
+</html>

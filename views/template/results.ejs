@@ -1,0 +1,61 @@
+<div class="container">
+    <% for (const result of results) { -%>
+        <div class="card mt-3 text-center hoverable">
+            <div class="card-body">
+                <!--Grid row-->
+                <div class="row">
+
+                    <!--Grid column-->
+                    <div class="col-md-4 offset-md-1 mx-3 my-3">
+                        <!--Featured image-->
+                        <div class="view overlay">
+                            <img style="max-height: 300px" src="<%= result.imagelink %>" class="img-fluid" alt="<%= result.title %>">
+                            <a>
+                                <div class="mask rgba-white-slight waves-effect waves-light"></div>
+                            </a>
+                        </div>
+                    </div>
+                    <!--Grid column-->
+
+                    <!--Grid column-->
+                    <div class="col-md-7 text-left ml-3 mt-3">
+                        <!--Excerpt-->
+                        <a href="/theloai/<%= result.kindurl %>" class="green-text">
+                            <h6 class="font-bold pb-1"><i class="categoryIcon" class=""><%= result.kind %></i> <span class="categoryName"><%= result.kindname %></span></h6>
+                        </a>
+                        <h4 class="mb-4"><strong><a href="/baiviet/<%= result.titleurl %>-<%= result.id %>"><%= result.title %></a></strong></h4>
+                        <p><%- result.content.slice(0, 300) %></p>
+                        <p><%= moment(result.date).calendar() %></p>
+                        <a href="/baiviet/<%= result.titleurl %>-<%= result.id %>" class="btn btn-dark waves-effect waves-light">Xem chi tiết</a><span class="float-right"><i class="far fa-eye"></i> <%= result.views %></span>
+                    </div>
+                    <!--Grid column-->
+                </div>
+                <!--Grid row-->
+            </div>
+        </div>
+    <% } -%>
+
+    <!-- If the reults are too much, suggest the most views of the week -->
+    <% if (results.length < 3) { %>
+        <hr>
+        <div class="alert alert-info text-center" role="alert">
+            <span class="alert-link">Có thể bạn quan tâm</span>
+        </div>
+        <div class="row">
+            <div class="card-deck-wrapper">
+                <div class="card-deck">
+                    <% for (hot of interest) { -%>
+                        <div class="card">
+                            <a href="baiviet/<%= hot.titleurl %>-<%= hot.id %>" title=""><img style="max-height: 210px" class="card-img-top img-fluid" src="<%= hot.imagelink %>" alt="<%= hot.title %>"></a>
+                            <div class="card-block mx-2">
+                                <a href="baiviet/<%= hot.titleurl %>-<%= hot.id %>" class="card-title"><%= hot.title.slice(0, 50) %></a>
+                                <p class="card-text"><small class="text-muted"><%= moment(hot.date).calendar() %></small><span class="float-right"><i class="far fa-eye"></i> <%= hot.views %></span></p>
+                            </div>
+                        </div>
+                    <% } -%>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+</div>

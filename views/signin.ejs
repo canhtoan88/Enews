@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%include template/head %>
+	<link rel="icon" href="img/icon.png">
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<!-- Custom Theme files -->
+	<link href="css/signin.css" rel="stylesheet" type="text/css"/>
+	<!-- //Custom Theme files -->
+	<!-- web font -->
+	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+	<!-- //web font -->
+	<title>Đăng nhập</title>
+</head>
+<body>
+	<!-- main -->
+	<div class="main-w3layouts wrapper">
+		<div class="main-agileinfo">
+			<div class="agileits-top">
+				<% if (errSignin) { -%>
+					<h3 style="color: yellow">*<%= errSignin %></h3>
+				<% } -%>
+				<form action="dangnhap" method="post">
+					<input class="text email" <% if (remember) { -%>
+						value="<%= remember.username%>"
+					<% } -%> type="email" name="username" placeholder="Email" required="">
+					<input class="text" <% if (remember) { -%>
+						value="<%= remember.password%>"
+					<% } -%> type="password" name="password" placeholder="Password" required="">
+					<div class="wthree-text" style="padding-top: 10px">
+						<label class="anim">
+							<input type="checkbox" <% if (remember) { -%>
+								checked="checked"
+							<% } -%> name="remember" class="checkbox">
+							<span>Ghi nhớ mật khẩu</span>
+						</label>
+						<h5><a href="quenmatkhau">Quên mật khẩu?</a></h5>
+						<div class="clear"> </div>
+					</div>
+					<input type="submit" value="ĐĂNG NHẬP">
+				</form>
+				<h3>Hoặc đăng nhập với</h3>
+				<div class="social">
+					<a href="/auth/facebook" class="btn btn-primary"><i class="fab fa-facebook-f"> Facebook</i></a>
+					<a href="/auth/google" class="btn btn-danger"><i class="fab fa-google-plus"> Google</i></a>
+				</div>
+				<hr><hr>
+				<h5><a href="/dangky">Đăng ký tài khoản mới</a></h5>
+			</div>
+		</div>
+		<ul class="colorlib-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<!-- //main -->
+</body>
+</html>

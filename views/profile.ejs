@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<%include template/head %>
+  <link rel="icon" href="img/icon.png">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/profile.css">
+  <title><%= user.fullname %> - Trang cá nhân</title>
+</head>
+
+<body>
+	<div class="container emp-profile">
+      <div class="row">
+          <div class="col-md-4">
+              <div class="profile-img">
+                  <img id="avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                  <!-- <div class="file btn btn-lg btn-primary">
+                      Thay đổi avatar
+                      <form action="thaydoiavatar" method="post" accept-charset="utf-8">
+                        <input type="file" name="file" class="file-upload"/>
+                      </form>
+                  </div> -->
+              </div>
+              <div class="profile-work">
+                <div class="row">
+                  <div class="col-6 col-md-12">
+                    <!--<p>Thao tác</p>
+                    <a href="/dangbai/1">Viết bài chia sẻ</a><br/>
+                    <a href="/dangbai/2">Đăng nhu cầu</a><br/>
+                    <a href="#">Xem thông báo</a>-->
+                  </div>
+                  <div class="col-6 col-md-12">
+                    <p>Các hoạt động</p>
+                    <a href="#">đã xem <%= user.views %> bài</a><br/>
+                    <a href="#"><%= user.comment %> bình luận</a><br/>
+                    <% if (saved) { -%>
+                        <a href="#">Lưu <%= saved.length %> bài viết</a><br/>
+                    <% } else { -%>
+                        <a href="#">Không có bài viết được lưu</a><br/>
+                    <% } -%>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="col-md-7">
+              <div class="profile-head">
+                          <a class="float-right" href="/index"><i class="fas fa-arrow-circle-left"></i> Quay về trang chủ</a>
+                          <h5><%= user.fullname %></h5>
+                          <p class="proile-rating">Điểm tương tác : <span>8/10</span></p>
+                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item">
+                          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Thông tin</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">Đã lưu</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="change-tab" data-toggle="tab" href="#change" role="tab" aria-controls="change" aria-selected="false">Đổi thông tin</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="change-password-tab" data-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="false">Đổi mật khẩu</a>
+                      </li>
+                  </ul>
+              </div>
+              <div class="tab-content profile-tab" id="myTabContent">
+                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="row">
+                          <div class="col-6">
+                              <label>Mã tài khoản</label>
+                          </div>
+                          <div class="col-6">
+                              <p><%= user.id %></p>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-6">
+                              <label>Họ và Tên</label>
+                          </div>
+                          <div class="col-6">
+                              <p><%= user.fullname %></p>
+                          </div>
+                      </div>
+
+                      <div class="row">
+                          <div class="col-6">
+                              <label>Email</label>
+                          </div>
+                          <div class="col-6">
+                              <p><%= user.email %></p>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-6">
+                              <label>Mật khẩu</label>
+                          </div>
+                          <div class="col-6">
+                              <p>********</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                    <% if (saved) { -%>
+                        <div class="row">
+                            <div class="col-2">
+                                <label>Ngày đăng</label>
+                            </div>
+                            <div class="col-6">
+                                <p>Tên sách</p>
+                            </div>
+                            <div class="col-3">
+                                <p>Action</p>
+                            </div>
+                        </div>
+                    <% } -%>
+                    <% if (saved) { -%>
+                      <% for (let i = 0; i < saved.length; i++) { -%>
+                        <hr>
+                        <div class="row">
+                            <div class="col-2">
+                                <label class="date3"><%= i+1 %></label>
+                            </div>
+                            <div class="col-6">
+                                <a href="/baiviet/<%= saved[i].titleurl%>-<%= saved[i].id%>"><%= saved[i].title %></a>
+                            </div>
+                            <div class="col-3">
+                              <a class="btn btn-danger" href="baiviet/xoa/<%= saved[i].id%>">Xóa</a>
+                            </div>
+                        </div>
+                      <% } -%>
+                    <% } else { -%>
+                        <div class="row">
+                            <div class="col-12 text-center">Bạn chưa lưu bất kỳ bài viết nào</div>
+                        </div>
+                    <% } -%>
+                  </div>
+                  <div class="tab-pane fade" id="change" role="tabpanel" aria-labelledby="change-tab">
+                      <form action="thaydoithongtin" method="post" accept-charset="utf-8">
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Mã tài khoản</label>
+                            </div>
+                            <div class="col-6">
+                                <p><%= user._id %></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-6">
+                              <input type="text" name="email" value="<%= user.email %>" hidden>
+                                <p><%= user.email %></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Họ và Tên</label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control" id="fullname" type="text" name="fullname" value="<%= user.fullname %>">
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-6">
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary" disabled="disabled" type="submit" id="confirmInfo">Xác nhận</button>
+                            </div>
+                        </div>
+                      </form>
+                  </div>
+                  <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
+                      <form action="doimatkhau" method="post" accept-charset="utf-8">
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Mật khẩu củ</label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control" type="password" name="password" placeholder="Mật khẩu củ" required>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                          <input type="text" name="email" value="<%=user.email%>" hidden>
+                            <div class="col-6">
+                                <label>Mật khẩu mới</label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control" type="password" name="newpassword" minlength="3" id="newpassword" placeholder="Mật khẩu mới" required>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-6">
+                                <label>Nhập lại mật khẩu mới</label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control" type="password" name="re-password" minlength="3" id="re-newpassword" placeholder="Nhập lại mật khẩu mới" required>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-6">
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-primary" id="confirmPassword" type="submit">Xác nhận</button>
+                            </div>
+                        </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+          <!-- <div class="col-md-3">
+              <button type="button" class="profile-edit-btn" name="btnAddMore">Chỉnh sửa thông tin</button>
+          </div> -->
+      </div>
+  </div>
+
+  <%include template/script%>
+  <script type="text/javascript" src="../../js/moment-with-locales.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var readURL = function(input) {
+					if (input.files && input.files[0]) {
+							var reader = new FileReader();
+
+							reader.onload = function (e) {
+									$('#avatar').attr('src', e.target.result);
+							}
+
+							reader.readAsDataURL(input.files[0]);
+					}
+			}
+
+
+			$(".file-upload").on('change', function(){
+				$('#btn-xacnhan').show();
+					readURL(this);
+			});
+		});
+	</script>
+
+    <script type="text/javascript">
+        $('#fullname').keyup(() => {
+            if ($('#fullname').val() === '<%= user.fullname %>') {
+                $('#confirmInfo').attr('disabled', true);
+            } else {
+                $('#confirmInfo').attr('disabled', false);
+            }
+            
+        })
+
+        $('#confirmPassword').click(() => {
+            console.log($('#newpassword').val() + ' ' + $('#re-newpassword').val());
+            if ($('#newpassword').val() != $('#re-newpassword').val()){
+                alert('Mật khẩu nhập lại không đúng!');
+                return false;
+            }
+        })
+    </script>
+
+    <script>
+        const tabs = document.getElementsByClassName('nav-link');
+        tabs[<%=  tab%>].classList.add('active');
+
+        const panes = document.getElementsByClassName('tab-pane');
+        panes[<%= tab %>].classList.add('show');
+        panes[<%= tab %>].classList.add('active');
+    </script>
+</body>
+
+</html>

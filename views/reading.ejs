@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%include template/head %>
+	<link rel="icon" href="<% if (article) { -%>
+		../
+	<% } -%>../img/icon.png">
+	<title><%= article.title %></title>
+	<link rel="stylesheet" href="../../css/comments.css"/>
+	<link rel="stylesheet" href="../../css/bootstrap.min.css">
+</head>
+<body>
+	<%include template/header %>
+	<%include template/menu %>
+	<%include template/content %>
+	<%include template/footer%>
+	<%include template/script%>
+	<script>
+		// Set category icon
+    	const categoryIcon = document.querySelectorAll('.categoryIcon');
+    	var classIcon = '';
+    	switch (<%= article.kind %> - 1) {
+    		case 0:
+    			classIcon = 'fa fa-desktop';
+    			break;
+    		case 1:
+    			classIcon = 'fas fa-futbol';
+    			break;
+    		case 2: 
+    			classIcon = 'fas fa-plane-departure'
+    			break;
+    		default: 
+    			classIcon = 'fas healthbeat'
+    			break;
+    	}
+    	for (let i = 0; i < categoryIcon.length; i++){
+    		categoryIcon[i].className = classIcon;
+    	}
+	</script>
+</body>
+</html>

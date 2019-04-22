@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%include template/head %>
+	<link rel="icon" href="img/icon.png">
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<!-- Custom Theme files -->
+	<link href="css/signin.css" rel="stylesheet" type="text/css"/>
+	<!-- //Custom Theme files -->
+	<!-- web font -->
+	<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+	<!-- //web font -->
+	<title>Đăng ký</title>
+</head>
+<body>
+	<!-- main -->
+	<div class="main-w3layouts wrapper">
+		<div class="main-agileinfo">
+			<div class="agileits-top">
+				<% if (errSignup) { %>
+					<p style="color: yellow">*<%= errSignup %></p>
+				<%}%>
+				
+				<form action="dangky" method="post">
+					<input class="text" type="text" name="fullname" placeholder="Họ và Tên" required="">
+					<input class="text email" type="email" name="username" placeholder="Email" required="">
+					<input class="text" type="password" name="password" placeholder="Mật khẩu" required="">
+					<input class="text w3lpass" type="password" name="re-password" placeholder="Nhập lại mật khẩu" required="">
+					<input type="submit" value="ĐĂNG KÝ">
+				</form>
+			</div>
+		</div>
+		<ul class="colorlib-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<!-- //main -->
+	<script type="text/javascript">
+		document.querySelector('input[type="submit"]').onclick = function() {
+			let password = document.querySelector('input[name="password"]').value,
+				repassword = document.querySelector('input[name="re-password"]').value;
+			if (password == repassword) {
+				return true;
+			} else {
+				alert('Mật khẩu nhập lại không chính xác!');
+				return false;
+			}
+		}
+	</script>
+</body>
+</html>
