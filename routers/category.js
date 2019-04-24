@@ -14,7 +14,7 @@ app.get('/:category',function(req,res) {
     }
 
     // Get articles follow category
-    categoryMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where articles.kind = kind.id and kind = ${category[kind]}`, (err, results) => {
+    categoryMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where articles.kind = kind.id and kind = ${category[kind]} order by date desc`, (err, results) => {
     	if (err) console.log(err);
     	if (req.isAuthenticated()) {
     		res.render('category', {user: req.user, results, tab: category[kind], moment});

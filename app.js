@@ -12,7 +12,8 @@ const Category      = require('./routers/category');
 const Search        = require('./routers/search');
 
 const app           = express();
-const port          = process.env.PORT || 3000;
+const port          = process.env.PORT || 8080;
+//const port          = process.env.PORT || 3000;
 
 const options = {
     key: fs.readFileSync('./files/key.pem', 'utf-8'),
@@ -22,7 +23,7 @@ const options = {
     secureProtocol: 'TLSv1_2_method'
 };
 
-const server = https.createServer(options, app);
+//const server = https.createServer(options, app);
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -44,4 +45,5 @@ app.use('/baiviet', Article);
 app.use('/theloai', Category);
 app.use('/timkiembaiviet', Search);
 
-server.listen(port);
+//server.listen(port);
+app.listen(port);

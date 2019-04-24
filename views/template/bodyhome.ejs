@@ -28,8 +28,8 @@
                                     <a href="/theloai/<%= allArticles[0].kindurl %>" class="green-text">
                                         <h6 class="font-bold pb-1"><i class="categoryIcon"><%= allArticles[0].kind %></i> <span class="categoryName"><%= allArticles[0].kindname %></span></h6>
                                     </a>
-                                    <h4 class="mb-4"><strong><a href="/baiviet/<%= allArticles[0].titleurl %>-<%= allArticles[0].id %>"><%= allArticles[0].title %></a></strong></h4>
-                                    <p><%- allArticles[0].content.slice(0, 300) %></p>
+                                    <h4 class="mb-4"><a href="/baiviet/<%= allArticles[0].titleurl %>-<%= allArticles[0].id %>"><%= allArticles[0].title %></a></h4>
+                                    <p><%- allArticles[0].content.replace(/<strong>/g, '').replace(/<\/strong>/g).slice(0, 200) %></p>
                                     <p><%= moment(allArticles[0].date).calendar() %></p>
                                     <a href="/baiviet/<%= allArticles[0].titleurl %>-<%= allArticles[0].id %>" class="btn btn-dark waves-effect waves-light">Xem chi tiết</a><span class="float-right"><i class="far fa-eye"></i> <%= allArticles[0].views %></span>
                                 </div>
@@ -86,7 +86,7 @@
 
                                     <!--Grid column-->
                                     <div class="col-md-7 text-left green-text">
-                                        <p><%- allArticles[j].content.slice(0, 100) %>...</p>
+                                        <p><%- allArticles[0].content.replace(/<strong>/g, '').replace(/<\/strong>/g).slice(0, 100) %>...</p>
                                     </div>
                                     <!--Grid column-->
                                 </div>

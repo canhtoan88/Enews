@@ -1,10 +1,23 @@
 {
-	"host": "https://localhost:3000",
+	"host": "https://enews-237900.appspot.com", //https://localhost:3000
 	"saltRound": 10,
 	"mysql": {
-		"host": "www.db4free.net",
-		"user": "dtdm_enews07",
-		"password": "enewsdtdm",
-		"database": "enews07"
-	}
+		"host": "35.237.139.5",
+		"user": "root",
+		"password": "enews-mysql",
+		"database": "enews"
+	}	
 }
+
+/*mysql": {
+		"host": "35.237.139.5",
+		"user": "root",
+		"password": "enews-mysql",
+		"database": "enews"
+	}*/
+
+
+	/*"appSecret": "",
+    "pageAccessToken": "",
+    "validationToken": "",
+    "serverURL": ""*/

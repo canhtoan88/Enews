@@ -22,7 +22,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/',function(req,res) {
-    const user = (req.isAuthenticated()) ? req.isAuthenticated() : null;
+    const user = (req.isAuthenticated()) ? req.user : null;
 
     allArticlesMD(res, checkArticleExist, user, userMD);
 });
@@ -60,8 +60,10 @@ app.post('/dangnhap', passport.authenticate('local', {failureRedirect: '/dangnha
 
 app.get('/auth/facebook', passport.authenticate('facebook', {authType: 'rerequest', scope: ['email', 'user_friends', 'manage_pages']}));
 app.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRedirect: '/dangnhap'}), (req,res) => {
-	if (!req.session.passport.user.phone) {
-		res.send('Cần số điện thoại');
+	if (req.session.url) {
+		const url = req.session.url;
+		req.session.url = null;
+		res.redirect(url);
 	} else {
 		res.redirect('/index');
 	}
@@ -69,8 +71,10 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {failureRed
 
 app.get('/auth/google', passport.authenticate('google', {scope: ['email', 'profile']}));
 app.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/dangnhap'}), (req,res) => {
-    if (!req.session.passport.user.phone) {
-		res.send('Cần số điện thoại');
+    if (req.session.url) {
+		const url = req.session.url;
+		req.session.url = null;
+		res.redirect(url);
 	} else {
 		res.redirect('/index');
 	}
@@ -79,38 +83,68 @@ app.get('/auth/google/callback', passport.authenticate('google', {failureRedirec
 passport.use(new FacebookStrategy({
 	clientID: '735019396847561',
 	clientSecret: '2317cb5b3053e11e5634dee59d110007',
-	callbackURL: 'https://localhost:3000/auth/facebook/callback',
+	callbackURL: `${config.get('host')}/auth/facebook/callback`,
 	enableProof: true,
 	profileFields: ['email', 'displayName'] // id, photos
 }, (accessToken, refreshToken, profile, cb) => {
-	const user = {
+	var user = {
 		fullname: profile.displayName,
-		email: profile._json.email,
-		state:true
+		email: profile._json.email
 	}
-	userMD.findOrCreate({email: user.email}, user, function(err, result) {
+	if (user.email) {
+		res.render('/dangnhap', {errSignin: 'Đăng nhập thất bại', remember: null});
+	}
+	userMD.query(`select * from users where email = '${user.email}'`, (err, result) => {
 		if (err) {
 			console.log(err);
 		} else {
-			cb(null, result);
+			if (result.length > 0) {
+				cb(null, result[0]);
+			} else {
+				user.id = uid(10);
+				userMD.query(`insert into users (id, email, password, fullname, comment, state, views) values ('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
+					if (err) {
+						console.log(err);
+					} else {
+						user.password = '',
+						user.views = 0,
+						user.comment = 0
+						cb(null, user);
+					}
+				})
+			}
 		}
 	})
 }))
 
 passport.use(new GoogleStrategy({
-	clientID: '946591989903-g8ljeh9j7vn795bt3f83hosv9iv75c2g.apps.googleusercontent.com',
-	clientSecret: '-Xrl3AZCAC0VCWNggFQSryVc',
-	callbackURL: 'https://localhost:3000/auth/google/callback'
+	clientID: '415311431370-b9cl76j8agmb034jeik1ej5scaf9t0g0.apps.googleusercontent.com',
+	clientSecret: 'pugCdLYlVNBClU1vRCbssdmU',
+	callbackURL: `${config.get('host')}/auth/google/callback`
 }, (accessToken, refreshToken, profile, cb) => {
-	const user = {
+	var user = {
 		fullname: profile.name.familyName + ' ' + profile.name.givenName,
-		email: profile.emails[0].value,
-		state:true
+		email: profile.emails[0].value
 	}
-	userMD.findOrCreate({email: user.email}, user, function(err, result) {
-		if (err) {console.log(err);}
-		else {
-			cb(null, result);
+	userMD.query(`select * from users where email = '${user.email}'`, (err, result) => {
+		if (err) {
+			console.log(err);
+		} else {
+			if (result.length > 0) {
+				cb(null, result[0]);
+			} else {
+				user.id = uid(10);
+				userMD.query(`insert into users (id, email, password, fullname, comment, state, views) values ('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
+					if (err) {
+						console.log(err);
+					} else {
+						user.password = '';
+						user.views = 0;
+						user.comment = 0;
+						cb(null, user);
+					}
+				})
+			}
 		}
 	})
 }))
@@ -156,7 +190,7 @@ app.post('/dangky', (req, res) => {
 							subject: 'Xác thực tài khoản',
 							template: 'mail-confirm',
 							context: {
-								url: 'https://localhost:3000/xacthuc-'+ user._id,
+								url: `${config.get('host')}/xacthuc-${user._id}`,
 								name: user.fullname
 							}
 						}*/
@@ -193,11 +227,11 @@ app.get('/xacthuc-:id', (req, res) => {
 				userMD.query(`update users set state = 1 where id = '${result[0].id}'`, (err) => {
 				if (req.isAuthenticated())
 					req.session.passport.user.state = true;
-				res.json('Tài khoản của bạn đã được xác thực!');
+				res.render('sitemove', {content: 'Tài khoản đã được xác thực!'});
 			})
 			}
 		} else {
-			res.json('Tài khoản cần xác thực không được tìm thấy!');
+			res.render('sitemove', {content: 'Tài khoản cần xác thực không được tìm thấy!'});
 		}
 	})
 });
@@ -284,7 +318,7 @@ app.post('/thaydoithongtin', (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
-			res.json('Cập nhập thông tin thành công');
+			res.redirect(`/thongtintaikhoan-2-${req.user.id}`);
 		}
 	})
 });
@@ -350,5 +384,46 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 })
+
+// Test and Repair
+
+app.get('/test',function(req,res) {
+    userMD.query(`select * from articles where kind = 1`, (err, result) => {
+    	console.log(result.length);
+    	res.send('Testing')
+    })
+});
+app.get('/insertkind',function(req,res) {
+	const kindName 	= ['Công nghệ', 'Bóng đá', 'Du lịch', 'Sức khoẻ'];
+	const kindurl	= ['cong-nghe', 'bong-da', 'du-lich', 'suc-khoe'];
+	for (let i = 0; i < 4; i++){
+		userMD.query(`insert into kind (kindname, kindurl) values ('${kindName[i]}', '${kindurl[i]}')`, (err) => {
+			
+		})
+	}
+	res.send('Thành công')
+});
+
+app.get('/xoabaiviet/:id',function(req,res) {
+	const id = req.params.id;
+    userMD.query(`delete from articles where id = ${id}`, err => {
+    	if (err) {
+    		console.log(err);
+    	}
+    	res.send('Thành công')
+    })
+});
+
+app.get('/xoataikhoan/:email',function(req,res) {
+    userMD.query(`delete from users where email = ${req.params.email}@gmail.com`, err => {
+    	res.send('Thành công')
+    })
+});
+
+/*app.get('/xoadatabase',function(req,res) {
+    userMD.query(`drop database enews`, err => {
+    	res.send('Thành công');
+    })
+});*/
 
 module.exports = app;

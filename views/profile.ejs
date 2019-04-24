@@ -14,7 +14,7 @@
       <div class="row">
           <div class="col-md-4">
               <div class="profile-img">
-                  <img id="avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                  <img id="avatar" src="img/user.png" alt=""/>
                   <!-- <div class="file btn btn-lg btn-primary">
                       Thay đổi avatar
                       <form action="thaydoiavatar" method="post" accept-charset="utf-8">
@@ -45,23 +45,25 @@
           </div>
           <div class="col-md-7">
               <div class="profile-head">
-                          <a class="float-right" href="/index"><i class="fas fa-arrow-circle-left"></i> Quay về trang chủ</a>
-                          <h5><%= user.fullname %></h5>
-                          <p class="proile-rating">Điểm tương tác : <span>8/10</span></p>
-                  <ul class="nav nav-tabs" id="myTab" role="tablist">
-                      <li class="nav-item">
-                          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Thông tin</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">Đã lưu</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="change-tab" data-toggle="tab" href="#change" role="tab" aria-controls="change" aria-selected="false">Đổi thông tin</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="change-password-tab" data-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="false">Đổi mật khẩu</a>
-                      </li>
-                  </ul>
+                    <a class="float-right" href="/index"><i class="fas fa-arrow-circle-left"></i> Quay về trang chủ</a>
+                    <h5><%= user.fullname %></h5>
+                    <p class="proile-rating"><a href="/dangxuat">Đăng xuất</a></p>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Thông tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">Đã lưu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="change-tab" data-toggle="tab" href="#change" role="tab" aria-controls="change" aria-selected="false">Đổi thông tin</a>
+                        </li>
+                        <% if (user.password != '') { %>
+                            <li class="nav-item">
+                                <a class="nav-link" id="change-password-tab" data-toggle="tab" href="#change-password" role="tab" aria-controls="change-password" aria-selected="false">Đổi mật khẩu</a>
+                            </li>
+                        <% } %>
+                    </ul>
               </div>
               <div class="tab-content profile-tab" id="myTabContent">
                   <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -103,10 +105,10 @@
                     <% if (saved) { -%>
                         <div class="row">
                             <div class="col-2">
-                                <label>Ngày đăng</label>
+                                <label>STT</label>
                             </div>
                             <div class="col-6">
-                                <p>Tên sách</p>
+                                <p>Tiêu đề</p>
                             </div>
                             <div class="col-3">
                                 <p>Action</p>

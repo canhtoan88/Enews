@@ -36,6 +36,8 @@ app.get('/*-:id',function(req,res) {
                                 })
                             }
                         }
+                        // Increase 1 view for current user
+                        req.user.views += 1;
                     })
                 }
 
@@ -136,6 +138,7 @@ app.post('/binhluan/:id',function(req,res) {
         else {
             articleMD.query(`update users set comment = comment + 1 where id = '${req.user.id}'`, err => {
                 if (err) {console.log(err);}
+                req.user.comment += 1;
                 res.redirect(req.session.url + '#commentArea');
             })
         }
