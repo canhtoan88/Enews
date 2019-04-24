@@ -16,6 +16,7 @@ const allArticlesMD		= require('../models/allArticlesMD');
 
 var errSignup 	= null,
 	errSignin	= null,
+	changeInfo	= null,
 	notify		= null;
 
 app.use(passport.initialize());
@@ -295,9 +296,9 @@ app.get('/thongtintaikhoan-:tab-:id', (req, res) => {
 			// Get saved articles from present user
 			userMD.query(`select * from saved, articles where saved.id_user = '${req.user.id}' and saved.id_article = articles.id`, function(err, saved) {
 				if (saved.length > 0)
-					res.render('profile', {user: req.user, tab, saved});
+					res.render('profile', {user: req.user, changeInfo, tab, saved});
 				else
-					res.render('profile', {user: req.user, tab, saved: null});
+					res.render('profile', {user: req.user, changeInfo, tab, saved: null});
 			})
 		} else {
 			res.redirect('/thongtintaikhoan-' + req.user.id);
@@ -318,6 +319,7 @@ app.post('/thaydoithongtin', (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
+			changeInfo = 'Thay đổi thông tin thành công!';
 			res.redirect(`/thongtintaikhoan-2-${req.user.id}`);
 		}
 	})
@@ -338,11 +340,13 @@ app.post('/doimatkhau', (req, res) => {
 					if (err) {
 						console.log(err);
 					} else {
-						res.render('sitemove', {content: 'Thay đổi mật khẩu thành công!'})
+						changeInfo = 'Mật khẩu đã được thay đổi';
+						res.redirect(`/thongtintaikhoan-3-${req.user.id}`);
 					}
 				})
 			} else {
-				res.json('Mật khẩu củ không chính xác');
+				changeInfo = 'Mật khẩu cũ không chính xác';
+				res.redirect(`/thongtintaikhoan-3-${req.user.id}`);
 			}
 		}
 	})
@@ -419,6 +423,17 @@ app.get('/xoataikhoan/:email',function(req,res) {
     	res.send('Thành công')
     })
 });
+
+/*app.get('/truyendulieu',function(req,res) {
+    userMD.query(`select * from articles`, (err, all) => {
+    	for (let i = 42; i < all.length; i++) {
+    		db4freeMD.query(`insert into articles values (${all[i].id}, ${all[i].kind}, '${all[i].title}', '${all[i].titleurl}', '${all[i].imagelink}', '${all[i].content}', ${all[i].views}, NOW())`, err => {
+		    	res.send('thành công');
+		    });
+    	}
+    })
+    
+});*/
 
 /*app.get('/xoadatabase',function(req,res) {
     userMD.query(`drop database enews`, err => {

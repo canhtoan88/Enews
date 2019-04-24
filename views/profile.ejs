@@ -139,6 +139,9 @@
                   <div class="tab-pane fade" id="change" role="tabpanel" aria-labelledby="change-tab">
                       <form action="thaydoithongtin" method="post" accept-charset="utf-8">
                         <div class="row">
+                            <% if (changeInfo != null) { %>
+                                <div class="col-12 text-warning text-center"><%= changeInfo %></div>
+                            <% } %>
                             <div class="col-6">
                                 <label>Mã tài khoản</label>
                             </div>
@@ -175,6 +178,9 @@
                   <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
                       <form action="doimatkhau" method="post" accept-charset="utf-8">
                         <div class="row">
+                            <% if (changeInfo != null) { %>
+                                <div class="col-12 text-warning text-center"><%= changeInfo %></div>
+                            <% } %>
                             <div class="col-6">
                                 <label>Mật khẩu củ</label>
                             </div>

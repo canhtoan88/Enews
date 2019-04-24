@@ -12,21 +12,21 @@ if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production
 }*/
 
 // For AWS
-var connection = mysql.createConnection({
+/*var connection = mysql.createConnection({
   host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
   port     : process.env.RDS_PORT
-});
+});*/
 
-/*// For Google Cloud SQL
+// For Google Cloud SQL
 const connection = mysql.createConnection({
-	socketPath  : '/cloudsql/enews-237900:us-east1:enews-mysql',
+	//socketPath  : '/cloudsql/enews-237900:us-east1:enews-mysql',
 	host 		: config.get('mysql.host'),
 	user 		: config.get('mysql.user'),
 	password 	: config.get('mysql.password'),
 	database 	: config.get('mysql.database')
-})*/
+})
 
 connection.connect();
 

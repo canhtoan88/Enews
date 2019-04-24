@@ -1,3 +1,7 @@
+CREATE DATABASE enews;
+
+USE enews;
+
 CREATE TABLE admin (
     username char(5),
     password char(3)
@@ -19,11 +23,6 @@ CREATE TABLE kind (
     kindname varchar(32),
     kindurl varchar(20)
 );
-
-INSERT INTO kind (kindname, kindurl) VALUES ('Công nghệ', 'cong-nghe');
-INSERT INTO kind (kindname, kindurl) VALUES ('Bóng đá', 'bong-da');
-INSERT INTO kind (kindname, kindurl) VALUES ('Du lịch', 'du-lich');
-INSERT INTO kind (kindname, kindurl) VALUES ('Sức khoẻ', 'suc-khoe');
 
 CREATE TABLE articles (
     id int PRIMARY KEY AUTO_INCREMENT,
@@ -64,13 +63,7 @@ CREATE TABLE saved (
 ALTER TABLE saved ADD FOREIGN KEY (id_user) REFERENCES users (id);
 ALTER TABLE saved ADD FOREIGN KEY (id_article) REFERENCES articles (id);
 
-
-
-// Add column
-ALTER TABLE table_name ADD COLUMN column_name column_defination
-
-// Add mutiple columns
-ALTER TABLE table_name ADD COLUMN column_name1 column_defination, ADD COLUMN column_name2 column_defination AFTER column_name
-
-// Drop column
-ALTER TABLE table_name DROP COLUMN column_defination
+INSERT INTO kind (kindname, kindurl) VALUES ('Công nghệ', 'cong-nghe');
+INSERT INTO kind (kindname, kindurl) VALUES ('Bóng đá', 'bong-da');
+INSERT INTO kind (kindname, kindurl) VALUES ('Du lịch', 'du-lich');
+INSERT INTO kind (kindname, kindurl) VALUES ('Sức khoẻ', 'suc-khoe');
