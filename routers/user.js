@@ -24,7 +24,6 @@ app.use(passport.session());
 
 app.get('/',function(req,res) {
     const user = (req.isAuthenticated()) ? req.user : null;
-
     allArticlesMD(res, checkArticleExist, user, userMD);
 });
 
@@ -93,7 +92,7 @@ passport.use(new FacebookStrategy({
 		email: profile._json.email
 	}
 	if (user.email) {
-		res.render('/dangnhap', {errSignin: 'Đăng nhập thất bại', remember: null});
+		res.render('dangnhap', {errSignin: 'Đăng nhập thất bại', remember: null});
 	}
 	userMD.query(`select * from users where email = '${user.email}'`, (err, result) => {
 		if (err) {

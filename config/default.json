@@ -1,5 +1,5 @@
 {
-	"host": "https://enews-237900.appspot.com", //https://localhost:3000
+	"host": "https://localhost:3000", //https://enews-237900.appspot.com
 	"saltRound": 10,
 	"mysql": {
 		"host": "www.db4free.net",
