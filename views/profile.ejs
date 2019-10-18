@@ -35,7 +35,7 @@
                     <a href="#">đã xem <%= user.views %> bài</a><br/>
                     <a href="#"><%= user.comment %> bình luận</a><br/>
                     <% if (saved) { -%>
-                        <a href="#">Lưu <%= saved.length %> bài viết</a><br/>
+                        <a href="#">Lưu <span id="numSave"><%= saved.length %></span> bài viết</a><br/>
                     <% } else { -%>
                         <a href="#">Không có bài viết được lưu</a><br/>
                     <% } -%>
@@ -123,10 +123,11 @@
                                 <label class="date3"><%= i+1 %></label>
                             </div>
                             <div class="col-6">
-                                <a href="/baiviet/<%= saved[i].titleurl%>-<%= saved[i].id%>"><%= saved[i].title %></a>
+                                <a href="/baiviet/<%=saved[i].titleurl%>-<%=saved[i].id%>"><%=saved[i].title %></a>
                             </div>
                             <div class="col-3">
-                              <a class="btn btn-danger" href="baiviet/xoa/<%= saved[i].id%>">Xóa</a>
+								<input type="hidden" name="article_id" value="<%=saved[i].id%>">
+                              <button onclick="save(this)" class="btn btn-danger">Xóa</button>
                             </div>
                         </div>
                       <% } -%>
@@ -248,13 +249,37 @@
 	</script>
 
     <script type="text/javascript">
+		// Unsave article
+		function save (e) {
+			const id = e.parentNode.querySelector('[name="article_id"]').value;
+			fetch('/baiviet/unsave?id=' + id)
+	        .then(result => {
+	            if (result.status == 200) {
+	                e.parentNode.parentNode.remove();
+					const numSave = document.querySelector('#numSave');
+					numSave.textContent = +numSave.textContent - 1;
+					if (numSave.textContent == 0){
+						const html = `
+							<div class="row">
+								<div class="col-12 text-center">Bạn chưa lưu bất kỳ bài viết nào</div>
+							</div>
+						`
+						document.querySelector('#posts').innerHTML = html;
+					}
+	                alert('Đã huỷ lưu bài viết!');
+	            }
+	        })
+	        .catch(err => console.log(err))
+		}
+
+		// Check fullname when change
         $('#fullname').keyup(() => {
             if ($('#fullname').val() === '<%= user.fullname %>') {
                 $('#confirmInfo').attr('disabled', true);
             } else {
                 $('#confirmInfo').attr('disabled', false);
             }
-            
+
         })
 
         $('#confirmPassword').click(() => {

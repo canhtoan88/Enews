@@ -27,11 +27,11 @@ app.get('/*-:id',function(req,res) {
                         else {
                             if (result[0].number == 0) {
                                 articleMD.query(`UPDATE users SET views = views + 1 WHERE id = '${req.user.id}'`, err => {
-                                    if (err) 
+                                    if (err)
                                         console.log(err);
                                 })
                                 articleMD.query(`insert into views values ('${req.user.id}', ${id})`, err => {
-                                    if (err) 
+                                    if (err)
                                         console.log(err);
                                 })
                             }
@@ -66,7 +66,7 @@ app.get('/*-:id',function(req,res) {
                         }, 0);
 
                         // Get comments
-                        articleMD.query(`select comments.id as id_comment, id_user, content, date, users.id as id_users, fullname from comments, users where id_article = ${id} and id_user = users.id order by date desc`, (err, comments) => {
+                        articleMD.query(`select comments.id as id_comment, editted, id_user, content, date, users.id as id_users, fullname from comments, users where id_article = ${id} and id_user = users.id order by date`, (err, comments) => {
                             if (err) console.log(err);
                             else {
                                 // Check comments
@@ -101,49 +101,89 @@ app.get('/*-:id',function(req,res) {
     })
 });
 
-app.get('/luubaiviet/:url/:id',function(req,res) {
+app.get('/save',function(req,res) {
     if (req.isAuthenticated()){
-        articleMD.query(`insert into saved value ('${req.user.id}', ${req.params.id})`, (err, result) => {
-            if (err) 
+        articleMD.query(`insert into saved value ('${req.user.id}', ${req.query.id})`, (err, result) => {
+            if (err)
                 console.log(err);
             else {
-                res.redirect(`/baiviet/${req.params.url}-${req.params.id}`);
+                //res.redirect(`/baiviet/${req.params.url}-${req.params.id}`);
+                res.status(200).json(result);
             }
         })
     } else {
-        req.session.url = `/baiviet/${req.params.url}-${req.params.id}`;
-        res.redirect('/dangnhap');
+        //req.session.url = `/baiviet/${req.params.url}-${req.params.id}`;
+        //res.redirect('/dangnhap');
+        res.status(403).json('Chưa đăng nhập!');
     }
 });
 
-app.get('/xoa/:id',function(req,res) {
+app.get('/unsave',function(req,res) {
     if (req.isAuthenticated()) {
-        articleMD.query(`delete from saved where id_user = '${req.user.id}' and id_article = ${req.params.id}`, function(err) {
+        articleMD.query(`delete from saved where id_user = '${req.user.id}' and id_article = ${req.query.id}`, function(err, result) {
             if (err) {
                 res.status(404).send('Bài viết không được tìm thấy!')
             } else {
-                res.redirect(`/thongtintaikhoan-1-${req.user.id}`);
+                //res.redirect(`/thongtintaikhoan-1-${req.user.id}`);
+                res.status(200).json(result);
             }
         })
     } else {
-        requiresignin(res);
+        res.status(403).json('Chưa đăng nhập!');
     }
 });
 
-app.post('/binhluan/:id',function(req,res) {
-    const id    = req.params.id,
+app.post('/binhluan',function(req,res) {
+    const id    = req.query.id,
         content = req.body.commentContent;
     articleMD.query(`insert into comments (id_user, id_article, content, date) values ('${req.user.id}', ${id}, '${content}', NOW())`, err => {
         if (err) console.log(err);
         else {
+            // Update quantity comment of current user
             articleMD.query(`update users set comment = comment + 1 where id = '${req.user.id}'`, err => {
-                if (err) {console.log(err);}
+                if (err) {console.log(err)}
                 req.user.comment += 1;
-                res.redirect(req.session.url + '#commentArea');
+                articleMD.query(`select comments.id, content, fullname, date from comments, users where comments.id_user = '${req.user.id}' and users.id = comments.id_user order by date desc limit 1`, (err, comment) => {
+                    //console.log(comment);
+                    res.status(200).json(comment[0]);
+                    //res.redirect(req.session.url + '#commentArea');
+                })
             })
         }
     })
 });
+
+// Edit comment
+app.put('/editComment', (req, res) => {
+    if (req.isAuthenticated()) {
+        const id = req.query.id;
+        const editedContent = req.body.editedContent;
+        articleMD.query(`update comments set content = '${editedContent}', editted = 1, date = NOW() where id = ${id}`, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            res.status(200).json(result);
+        })
+    } else {
+        res.status(403).json('Chưa đăng nhập!');
+    }
+});
+
+app.delete('/deleteComment', (req, res) => {
+    if (req.isAuthenticated()) {
+        const id = req.query.id;
+        const query = 'delete from comments where id = ' + id;
+        articleMD.query(query, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            res.status(200).json(result);
+        })
+    } else {
+        //res.redirect('/'+req.session.url);
+        res.status(403).json('Chưa đăng nhập!');
+    }
+})
 
 /*
 app.get('/chinhsua/:id',function(req,res) {
@@ -163,7 +203,7 @@ app.get('/chinhsua/:id',function(req,res) {
                     res.send('Bài viết không tồn tại!')
                 }
             }
-        }) 
+        })
     } else {
         requiresignin(res);
     }

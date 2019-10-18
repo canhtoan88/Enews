@@ -6,10 +6,11 @@ module.exports = {
 		}
 		return 0;
 	},
-	allArticles: (row, allArticles) => {
-		for (let i = 0; i < allArticles.length; i++) {
-			if (row.id == allArticles[i])
-				allArticles.splice(i, 1);
+	allArticles: (row, newArticles) => {
+		for (let i = 0; i < newArticles.length; i++) {
+			if (row.id == newArticles[i].id){
+				newArticles.splice(i, 1);
+			}
 		}
 	}
 }

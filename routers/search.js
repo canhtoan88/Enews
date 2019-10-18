@@ -35,7 +35,7 @@ app.post('/',function(req,res) {
 					res.render('template/notfound', {user});
 				} else {
 					if (results.length < 3) {
-						searchMD.query(`select * from articles where date > (SELECT DATE_ADD(CURDATE(), INTERVAL '-7' DAY)) order by views desc limit 6`, (err, interest) => {
+						searchMD.query(`select * from articles where date > (SELECT DATE_ADD(CURDATE(), INTERVAL '-365' DAY)) order by views desc limit 6`, (err, interest) => {
 							if (err) {
 								console.log(err);
 							} else {

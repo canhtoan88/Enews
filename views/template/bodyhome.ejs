@@ -58,11 +58,11 @@
             <!-- Set articles follow category -->
             <% for (let i = 0; i < 4; i++) { -%>
                 <div class="alert alert-info" role="alert">
-                    <span class="alert-link"><%= i %></span> - 
+                    <span class="alert-link"><%= i %></span> -
                     <a style="text-decoration: none" href="/theloai/<%= allArticles[11+i*4].kindurl %>" class="topic"><i>Xem thêm</i></a>
                 </div>
                 <div class="row">
-                <% for (let j = i*4+11; j <= (i * 4 + 14); j++){-%>
+                <% for (let j = i*4+21; j <= (i * 4 + 24); j++){-%>
                     <div class="col-6">
                         <div class="card mb-3 hoverable">
                             <div class="card-body">
@@ -86,7 +86,7 @@
 
                                     <!--Grid column-->
                                     <div class="col-md-7 text-left green-text">
-                                        <p><%- allArticles[0].content.replace(/<strong>/g, '').replace(/<\/strong>/g).slice(0, 100) %>...</p>
+                                        <p><%- allArticles[j].content.replace(/<strong>/g, '').replace(/<\/strong>/g).slice(0, 100) %>...</p>
                                     </div>
                                     <!--Grid column-->
                                 </div>
@@ -153,10 +153,10 @@
             case 1:
                 classIcon = 'fas fa-futbol';
                 break;
-            case 2: 
+            case 2:
                 classIcon = 'fas fa-plane-departure'
                 break;
-            default: 
+            default:
                 classIcon = 'fas fa-heartbeat'
                 break;
         }

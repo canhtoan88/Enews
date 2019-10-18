@@ -8,7 +8,7 @@ const User          = require('./routers/user');
 const Admin         = require('./routers/admin');
 const Post          = require('./routers/post');
 const Article       = require('./routers/article');
-const Category      = require('./routers/category');   
+const Category      = require('./routers/category');
 const Search        = require('./routers/search');
 
 const app           = express();
@@ -28,6 +28,7 @@ const server = https.createServer(options, app);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(session({
   secret: 'canhtoan',
   resave: false,
@@ -44,6 +45,9 @@ app.use('/dangbai', Post);
 app.use('/baiviet', Article);
 app.use('/theloai', Category);
 app.use('/timkiembaiviet', Search);
+app.use((req, res, next) => {
+    res.render('template/notfound');
+});
 
 server.listen(port);
 //app.listen(port);

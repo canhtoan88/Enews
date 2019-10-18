@@ -15,6 +15,9 @@
 	<%include template/content %>
 	<%include template/footer%>
 	<%include template/script%>
+	<script type="text/javascript" src="/js/moment.js"></script>
+	<script type="text/javascript" src="/js/moment-with-locales.js"></script>
+	<script type="text/javascript" src="/js/js.js"></script>
 	<script>
 		// Set category icon
     	const categoryIcon = document.querySelectorAll('.categoryIcon');
@@ -26,10 +29,10 @@
     		case 1:
     			classIcon = 'fas fa-futbol';
     			break;
-    		case 2: 
+    		case 2:
     			classIcon = 'fas fa-plane-departure'
     			break;
-    		default: 
+    		default:
     			classIcon = 'fas fa-heartbeat'
     			break;
     	}

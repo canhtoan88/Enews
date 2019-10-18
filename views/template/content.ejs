@@ -3,12 +3,13 @@
 	  <ol class="breadcrumb">
 	    <li class="breadcrumb-item"><a href="/index"><small>Enews</small></a></li>
 	    <li class="breadcrumb-item"><a href="/ban-1"><small><%= article.kindname %></small></a></li>
-	    <li class="breadcrumb-item active" aria-current="page"><small><%= article.title %></small> 
+	    <li class="breadcrumb-item active" aria-current="page"><small><%= article.title %></small>
 	    	<% if (num != null) { -%>
+				<input type="hidden" name="article_id" value="<%=article.id%>">
 	    		<% if (num == 0) { %>
-	    			<a href="/baiviet/luubaiviet/<%=article.titleurl%>/<%= article.id%>" class="badge badge-pill badge-dark">Lưu bài viết</a>
+	    			<i style="cursor: pointer" onclick="save(this)" data-save="0" class="badge badge-pill badge-dark">Lưu bài viết</i>
 	    		<% } else { %>
-	    			<i class="badge badge-pill badge-dark">Đã lưu</i>
+	    			<i style="cursor: pointer" onclick="save(this)" data-save="1" class="badge badge-pill badge-dark">Đã lưu</i>
 	    		<% } %>
 	    	<% } -%>
 	    </li>
@@ -26,49 +27,42 @@
 
 			<!-- Comment's content around -->
 			<% if (comments) { -%>
-				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (<%= comments.length %>)</b></p>
+				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (<span id="numComment"><%= comments.length %></span>)</b></p>
 				<% for (comment of comments) { -%>
 					<div class="containerct">
-					  	<p id="<%= comment.id %>">
+					  	<p id="<%= comment.id_comment %>">
 					  		<span style="color: orange;"><%= comment.fullname %></span>
-					  		<i><%= moment(comment.date).calendar()%></i>
-
-						  	<!-- <c:if test="${binhluan.getMaNguoiDung() == manguoidung}">
-						  		<c:if test="${binhluan.getMaBinhLuan() != editmabinhluan}">
-						  			<sup>
-						  				<a href="Comment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}">Xóa</a> ||
-						  				<a href="EditComment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}">Chỉnh sửa</a>
-						  			</sup>
-						  		</c:if>
-  									<c:if test="${binhluan.getMaBinhLuan() == editmabinhluan}">
-  										<form id="editcomment" action="EditComment?mabinhluan=${binhluan.getMaBinhLuan()}&mabaiviet=${thongtinbaiviet.getMaBaiViet()}&matheloai=${matheloai}" method="post">
-  										    <div class="form-group">
-  										    	<textarea class="form-control" name="noidungbinhluan" rows="5" minlength="10" maxlength="300" autofocus>${noidungbinhluan}</textarea>
-  										    	<span style="float: right"><input class="btn btn-success" style="margin: 10px 0" type="submit" value="Lưu"/></span>
-  										    	<span style="float: right"><a href="" class="btn btn-success" style="margin: 10px 0" type="button">Hủy</a></span>
-  										  	</div>
-  										</form>
-  							    	</c:if>
-						  	</c:if> -->
+					  		<i><%= moment(comment.date).calendar()%><%if (comment.editted == 1) {-%>
+					  			<sub>Đã chỉnh sửa</sub>
+					  		<%}-%></i>
+							<%if (user) {-%>
+								<% if (comment.id_user == user.id) { -%>
+									<sup>
+										<input type="hidden" name="comment_id" value="<%=comment.id_comment%>">
+										<button class="btn btn-link" onclick="deleteComment(this)">Xóa</button> ||
+										<button class="btn btn-link" onclick="editComment(this)">Chỉnh sửa</button>
+									</sup>
+								<%}-%>
+							<%}-%>
 					  	</p>
 					  	<p style="padding: 0 20px">&emsp;&emsp;<%= comment.content %></p>
 					</div>
 				<% } -%>
 			<% } else { -%>
-				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (0)</b></p>
+				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (<span id="numComment">0</span>)</b></p>
 			<% } -%>
 			<!-- End Comment's content around -->
 
 			<!-- Comment around -->
 			<% if (user) { -%>
-				<form id="comment" action="/baiviet/binhluan/<%= article.id %>" method="post">
+				<!--<form id="comment" action="/baiviet/binhluan/<= article.id %>" method="post">-->
 				    <div class="form-group text-right">
+						<input type="hidden" name="article_id" value="<%= article.id%>">
 				    	<textarea class="form-control" name="commentContent" rows="4" placeholder="Nhập nội dung bình luận ..." maxlength="300"></textarea>
 				    	<span>
-				    		<input class="btn btn-success" style="margin: 10px 0" type="submit" value="Đăng bình luận"/>
+				    		<input id="btnInsertComment" onClick="insertComment(this)" class="btn btn-success" style="margin: 10px 0" type="button" value="Đăng bình luận"/>
 				    	</span>
 				  	</div>
-				</form>
 			<% } else { -%>
 				<p style="margin-bottom: 16px">Hãy<a href="/dangnhap" class="btn btn-link"><i>đăng nhập</i></a>để bình luận cho bài viết này!! Hoặc<a href="/dangky" class="btn btn-link"><i>đăng ký</i></a>nếu chưa có tài khoản.</p>
 			<% } -%>
@@ -97,7 +91,7 @@
 				<% if (i == 0) { %>
 					<br>
 				<% } %>
-				
+
 			<% } -%>
 			<!-- End the same category -->
 		</div>

@@ -42,7 +42,7 @@ module.exports = (res, checkArticleExist, user, userMD) => {
 								    		}
 
 								    		// Get articles that have a lot of interest in the last 30 days
-								    		userMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where articles.kind = kind.id and date > (SELECT DATE_ADD(CURDATE(), INTERVAL '-30' DAY)) order by views desc limit 10`, (err, interests) => {
+								    		userMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where articles.kind = kind.id and date > (SELECT DATE_ADD(CURDATE(), INTERVAL '-365' DAY)) order by views desc limit 10`, (err, interests) => {
 								    			if (err) {
 								    				console.log(err);
 								    			} else {
@@ -50,7 +50,7 @@ module.exports = (res, checkArticleExist, user, userMD) => {
 										    		// Push articles at the begining of all articles
 										    		allArticles.unshift(...interests);
 										    		allArticles.unshift(...newArticles.slice(0, 11));
-								    		
+
 								    				res.render('index', {user, allArticles, moment});
 								    			}
 								    		})
