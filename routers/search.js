@@ -10,9 +10,10 @@ app.post('/',function(req,res) {
 	const searchContent = req.body.searchContent;
 
 	// Get articles follow client's require
-	searchMD.query(`select articles.id, kind, title, titleurl, imagelink, content, views, date, kindname, kindurl from articles, kind where title like '%${searchContent}%' and articles.kind = kind.id`, (err, results) => {
+	searchMD.query(`call SEARCH_ARTICLES_PROC('%${searchContent}%')`, (err, results) => {
 		if (err) console.log(err);
 		else {
+			results = results[0]
 			const user = (req.user) ? req.user : null;
 
 			// Split search's content
@@ -22,8 +23,9 @@ app.post('/',function(req,res) {
 				strSearchContent += s + '%';
 			}
 			// Search from article's content
-			searchMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where content like '${strSearchContent}' and articles.kind = kind.id`, (err, result) => {
+			searchMD.query(`call SEARCH_ARTICLES_BY_CONTENT_PROC('${strSearchContent}')`, (err, result) => {
 				// Push search's results from article's content into results from title
+				result = result[0];
 				for (let i = 0; i < result.length; i++) {
 					if (checkArticleExist.found(result[i], results)){
 						result.splice(i, 1);
@@ -35,20 +37,20 @@ app.post('/',function(req,res) {
 					res.render('template/notfound', {user});
 				} else {
 					if (results.length < 3) {
-						searchMD.query(`select * from articles where date > (SELECT DATE_ADD(CURDATE(), INTERVAL '-365' DAY)) order by views desc limit 6`, (err, interest) => {
+						searchMD.query(`call FIND_INTERESTED_ARTICLES_PROC(6)`, (err, interest) => {
 							if (err) {
 								console.log(err);
 							} else {
 								// Delete the same articles
 								for (let i = 0; i < interest.length; i++){
-									if (checkArticleExist.found(interest[i], results)){
-										interest.splice(i, 1);
+									if (checkArticleExist.found(interest[0][i], results)){
+										interest[0].splice(i, 1);
 										i--
 									}
 								}
 
 								// Get only 4 articles
-								interest = interest.slice(0, 4);
+								interest = interest[0].slice(0, 4);
 
 								// Render
 								res.render('found', {user, moment, results, interest, searchContent});

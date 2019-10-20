@@ -30,15 +30,15 @@
 				<p id="commentArea" style="color: green; font-size: 16px; margin-top: 16px"><b>BÌNH LUẬN (<span id="numComment"><%= comments.length %></span>)</b></p>
 				<% for (comment of comments) { -%>
 					<div class="containerct">
-					  	<p id="<%= comment.id_comment %>">
+					  	<p id="<%= comment.comment_id %>">
 					  		<span style="color: orange;"><%= comment.fullname %></span>
-					  		<i><%= moment(comment.date).calendar()%><%if (comment.editted == 1) {-%>
+					  		<i><%= moment(comment.date).calendar()%><%if (comment.edited == 1) {-%>
 					  			<sub>Đã chỉnh sửa</sub>
 					  		<%}-%></i>
 							<%if (user) {-%>
-								<% if (comment.id_user == user.id) { -%>
+								<% if (comment.user_id == user.id) { -%>
 									<sup>
-										<input type="hidden" name="comment_id" value="<%=comment.id_comment%>">
+										<input type="hidden" name="comment_id" value="<%=comment.comment_id%>">
 										<button class="btn btn-link" onclick="deleteComment(this)">Xóa</button> ||
 										<button class="btn btn-link" onclick="editComment(this)">Chỉnh sửa</button>
 									</sup>

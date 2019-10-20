@@ -1,8 +1,9 @@
 module.exports = {
 	found: (row, results) => {
 		for (r of results) {
-			if (row.id == r.id)
+			if (row.id == r.id) {
 				return 1;
+			}
 		}
 		return 0;
 	},

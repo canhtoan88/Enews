@@ -94,7 +94,7 @@ passport.use(new FacebookStrategy({
 	if (user.email) {
 		res.render('dangnhap', {errSignin: 'Đăng nhập thất bại', remember: null});
 	}
-	userMD.query(`select * from users where email = '${user.email}'`, (err, result) => {
+	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${user.email}')`, (err, result) => {
 		if (err) {
 			console.log(err);
 		} else {
@@ -102,7 +102,7 @@ passport.use(new FacebookStrategy({
 				cb(null, result[0]);
 			} else {
 				user.id = uid(10);
-				userMD.query(`insert into users (id, email, password, fullname, comment, state, views) values ('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
+				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
 					if (err) {
 						console.log(err);
 					} else {
@@ -126,7 +126,7 @@ passport.use(new GoogleStrategy({
 		fullname: profile.name.familyName + ' ' + profile.name.givenName,
 		email: profile.emails[0].value
 	}
-	userMD.query(`select * from users where email = '${user.email}'`, (err, result) => {
+	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${user.email}')`, (err, result) => {
 		if (err) {
 			console.log(err);
 		} else {
@@ -134,7 +134,7 @@ passport.use(new GoogleStrategy({
 				cb(null, result[0]);
 			} else {
 				user.id = uid(10);
-				userMD.query(`insert into users (id, email, password, fullname, comment, state, views) values ('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
+				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
 					if (err) {
 						console.log(err);
 					} else {
@@ -173,14 +173,15 @@ app.post('/dangky', (req, res) => {
 	}
 	// Check email or phone is existing
 	// Can use findOrCreate
-	userMD.query(`SELECT * FROM users WHERE email = '${user.email}'`, function(err, result) {
+	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${user.email}')`, function(err, result) {
 		if (err) {console.log(err);}
 		else {
-			if (result[0]) {
+			if (result[0][0]) {
 				errSignup = 'Email đã được đăng ký ở một tài khoản khác';
 				res.redirect('/dangky');
 			} else {
-				userMD.query(`insert into users values ('${user.id}', '${user.email}', '${user.password}', '${user.fullname}', 0, 0, 0)`, function(err, result) {
+				// insert into users values ('${user.id}', '${user.email}', '${user.password}', '${user.fullname}', 0, 0, 0)
+				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '${user.password}', '${user.fullname}')`, function(err, result) {
 					if (err) {console.log(err);}
 					else {
 						// Message and receiver
@@ -224,7 +225,8 @@ app.get('/xacthuc-:id', (req, res) => {
 			if (result[0].state == 1) {
 				res.json('Yêu cầu xác thực không thành công do tài khoản đã được xác thực từ trước!');
 			} else {
-				userMD.query(`update users set state = 1 where id = '${result[0].id}'`, (err) => {
+				// update users set state = 1 where id = '${result[0].id}'
+				userMD.query(`select VERIFY_USER_FN('${result[0].id}')`, (err) => {
 				if (req.isAuthenticated())
 					req.session.passport.user.state = true;
 				res.render('sitemove', {content: 'Tài khoản đã được xác thực!'});
@@ -245,17 +247,17 @@ app.get('/quenmatkhau', (req, res) => {
 app.post('/quenmatkhau', (req, res) => {
   // Check email existing
 	const email = req.body.email;
-	userMD.query(`select * from users where email = '${email}'`, function(err, user) {
+	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${email}')`, function(err, user) {
 		if (err) {
 			console.log(err);
 		} else {
-			if (user[0]) {
+			if (user[0][0]) {
 				const mailOption = {
 					sender: 'IShare',
 					to: email,
 					subject: 'Cấp lại mật khẩu',
 					html: `<h3>Bạn quên mật khẩu?</h3>
-						<p>Click vào <a href="${config.get('host')}/caplaimatkhau-${user[0].id}">đây</a> để lấy lại mật khẩu</p>`
+						<p>Click vào <a href="${config.get('host')}/caplaimatkhau-${user[0][0].email}">đây</a> để lấy lại mật khẩu</p>`
 				}
 				mailer.sendMail(mailOption, function(err, result) {
 					if (err) {
@@ -270,15 +272,15 @@ app.post('/quenmatkhau', (req, res) => {
 });
 
 // Re-password
-app.get('/caplaimatkhau-:id', (req, res) => {
-	res.render('renewpassword', {id: req.params.id});
+app.get('/caplaimatkhau-:email', (req, res) => {
+	res.render('renewpassword', {email: req.params.email});
 });
 
 // Re-password
 app.post('/caplaimatkhau', (req, res) => {
-  	const id 		= req.body.id,
+  	const email 	= req.body.email,
 		password 	= bcrypt.hashPassword(req.body.password);
-	userMD.query(`update users set password = '${password}' where id = '${id}'`, function(err) {
+	userMD.query(`select UPDATE_PASSWORD_USER_FN('${password}', '${email}')`, function(err) {
 		if (err) {
 			console.log(err);
 		} else {
@@ -293,9 +295,9 @@ app.get('/thongtintaikhoan-:tab-:id', (req, res) => {
 		const tab = req.params.tab;
 		if (req.user.id == req.params.id){
 			// Get saved articles from present user
-			userMD.query(`select * from saved, articles where saved.id_user = '${req.user.id}' and saved.id_article = articles.id`, function(err, saved) {
-				if (saved.length > 0)
-					res.render('profile', {user: req.user, changeInfo, tab, saved});
+			userMD.query(`call FIND_SAVED_PROC('${req.user.id}')`, function(err, saved) {
+				if (saved[0] && saved[0].length > 0)
+					res.render('profile', {user: req.user, changeInfo, tab, saved: saved[0]});
 				else
 					res.render('profile', {user: req.user, changeInfo, tab, saved: null});
 			})
@@ -314,7 +316,7 @@ app.post('/thaydoithongtin', (req, res) => {
 	}
 	// Resave session then change their profile
 	req.session.passport.user.fullname = user.fullname;
-	userMD.query(`update users set fullname = '${user.fullname}' where email = '${user.email}'`, user, function(err, result) {
+	userMD.query(`select UPDATE_INFO_USER_FN('${user.fullname}', '${user.email}')`, function(err, result) {
 		if (err) {
 			console.log(err);
 		} else {
@@ -329,13 +331,13 @@ app.post('/doimatkhau', (req, res) => {
 		password 	= req.body.password,
 		newpassword = bcrypt.hashPassword(req.body.newpassword);
 	// Find account want to change the their password
-	userMD.query(`select password from users where email = '${email}'`, function(err, oldPassword) {
+	userMD.query(`call FIND_OLD_PASSWORD_PROC('${email}')`, function(err, oldPassword) {
 		if (err) {
 			console.log(err);
 		} else {
 			// Compare new and old password
-			if (bcrypt.comparePassword(password, oldPassword[0].password)) {
-				userMD.query(`update users set password = '${newpassword}' where email = '${email}'`, function(err) {
+			if (bcrypt.comparePassword(password, oldPassword[0][0].password)) {
+				userMD.query(`select UPDATE_PASSWORD_USER_FN('${newpassword}', '${email}')`, function(err) {
 					if (err) {
 						console.log(err);
 					} else {
@@ -353,10 +355,11 @@ app.post('/doimatkhau', (req, res) => {
 
 // Sign in with account from sign up
 passport.use(new LocalStrategy((username, password, done) => {
-	userMD.query(`select * from users where email = '${username}'`, function(err, user) {
+	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${username}')`, function(err, user) {
 		if (err) {console.log(err);}
 		else {
-			if (user[0]) {
+			if (user[0][0]) {
+				user[0] = user[0][0];
 				if (user[0].password){
 					if (bcrypt.comparePassword(password, user[0].password)) {
 						if (user[0].state == 1)
@@ -405,22 +408,6 @@ app.get('/insertkind',function(req,res) {
 		})
 	}
 	res.send('Thành công')
-});
-
-app.get('/xoabaiviet/:id',function(req,res) {
-	const id = req.params.id;
-    userMD.query(`delete from articles where id = ${id}`, err => {
-    	if (err) {
-    		console.log(err);
-    	}
-    	res.send('Thành công')
-    })
-});
-
-app.get('/xoataikhoan/:email',function(req,res) {
-    userMD.query(`delete from users where email = ${req.params.email}@gmail.com`, err => {
-    	res.send('Thành công')
-    })
 });
 
 /*app.get('/truyendulieu',function(req,res) {

@@ -21,7 +21,7 @@
                     <div class="col-md-7 text-left ml-3 mt-3">
                         <!--Excerpt-->
                         <a href="/theloai/<%= result.kindurl %>" class="green-text">
-                            <h6 class="font-bold pb-1"><i class="categoryIcon" class=""><%= result.kind %></i> <span class="categoryName"><%= result.kindname %></span></h6>
+                            <h6 class="font-bold pb-1"><i class="categoryIcon" class=""><%= result.kind_id %></i> <span class="categoryName"><%= result.kindname %></span></h6>
                         </a>
                         <h4 class="mb-4"><strong><a href="/baiviet/<%= result.titleurl %>-<%= result.id %>"><%= result.title %></a></strong></h4>
                         <p><%- result.content.slice(0, 300) %></p>

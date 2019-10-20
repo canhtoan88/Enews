@@ -102,6 +102,7 @@ const insertComment = (btn) => {
         return result.json();
     })
     .then(comment => {
+        moment.locale('vi');
         const newComment = `
             <div class="containerct">
                 <p id="${comment.id}">

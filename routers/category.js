@@ -14,12 +14,12 @@ app.get('/:category',function(req,res) {
     }
 
     // Get articles follow category
-    categoryMD.query(`select articles.id, kind, title, titleurl, imagelink, content, date, views, kindname, kindurl from articles, kind where articles.kind = kind.id and kind = ${category[kind]} order by date desc`, (err, results) => {
+    categoryMD.query(`call FIND_ALL_ARTICLES_FOLLOW_CATEGORY_PROC(${category[kind]})`, (err, results) => {
     	if (err) console.log(err);
     	if (req.isAuthenticated()) {
-    		res.render('category', {user: req.user, results, tab: category[kind], moment});
+    		res.render('category', {user: req.user, results: results[0], tab: category[kind], moment});
     	} else {
-    		res.render('category', {user: null, results, tab: category[kind], moment});
+    		res.render('category', {user: null, results: results[0], tab: category[kind], moment});
     	}
     })
 });

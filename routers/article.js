@@ -14,23 +14,23 @@ const articleMD = require('../models/user');
 app.get('/*-:id',function(req,res) {
     const id = req.params.id;
 
-    articleMD.query(`SELECT articles.id, kind, title, titleurl, imagelink, content, date, kindname, kindurl FROM articles, kind WHERE articles.id = ${id} AND kind.id = articles.kind`, function(err, article) {
+    articleMD.query(`call FIND_ARTICLE_INFO_PROC(${id})`, function(err, article) {
         if (err) {console.log(err);}
         else {
-            if (article[0]) {
-
+            if (article[0][0]) {
+                article[0] = article[0][0];
                 // Set views for current user
                 if (req.isAuthenticated()) {
-                    articleMD.query(`select count(*) as number from views where id_user = '${req.user.id}' and id_article = ${id}`, (err, result) => {
+                    articleMD.query(`select CHECK_VIEWS_ARTICLE_FN('${req.user.id}', ${id}) as seen`, (err, result) => {
                         if (err)
                             console.log(err);
                         else {
-                            if (result[0].number == 0) {
-                                articleMD.query(`UPDATE users SET views = views + 1 WHERE id = '${req.user.id}'`, err => {
+                            if (result[0].seen == 0) {
+                                articleMD.query(`select INCREASE_VIEWS_CR_USER_FN('${req.user.id}')`, err => {
                                     if (err)
                                         console.log(err);
                                 })
-                                articleMD.query(`insert into views values ('${req.user.id}', ${id})`, err => {
+                                articleMD.query(`select SET_USER_VIEW_ARTICLE_FN('${req.user.id}', ${id})`, err => {
                                     if (err)
                                         console.log(err);
                                 })
@@ -54,35 +54,37 @@ app.get('/*-:id',function(req,res) {
                 }*/
 
                 // Get similar articles
-                articleMD.query(`SELECT id, kind, title, titleurl, imagelink, views, date FROM articles WHERE kind = ${article[0].kind} AND id <> ${id} ORDER BY date DESC LIMIT 10`, (err, similar) => {
-                    if (similar.length > 0) {
+                articleMD.query(`call FIND_SIMILAR_ARTICLES_PROC(${id}, ${article[0].kind_id})`, (err, similar) => {
+                    if (similar[0].length > 0) {
+                        similar = similar[0];
                         req.session.url = req.originalUrl;
 
                         // Set view for this article
                         var myTimeout = setTimeout(() => {
-                            articleMD.query(`update articles set views = views + 1 where id = ${id}`, err => {
+                            articleMD.query(`select INCREASE_VIEWS_ARTICLE_FN(${id})`, err => {
                                 if (err) {console.log(err);}
                             })
                         }, 0);
 
                         // Get comments
-                        articleMD.query(`select comments.id as id_comment, editted, id_user, content, date, users.id as id_users, fullname from comments, users where id_article = ${id} and id_user = users.id order by date`, (err, comments) => {
+                        articleMD.query(`call FIND_COMMENTS_PROC(${id})`, (err, comments) => {
                             if (err) console.log(err);
                             else {
                                 // Check comments
-                                if (comments.length == 0) {
+                                if (comments[0].length == 0) {
                                     comments = null;
-                                }
+                                } else comments = comments[0];
 
                                 // Get the most new articles
-                                articleMD.query(`select * from articles where id <> ${id} order by date desc limit 6`, (err, newArticles) => {
+                                articleMD.query(`call FIND_6_OTHER_LASTEST_ARTICLES_PROC(${id})`, (err, newArticles) => {
                                     if (err) {
                                         console.log(err);
                                     } else {
-                                        // Allow article if signed in
+                                        newArticles = newArticles[0];
+                                        // Check current user have been saved article
                                         if (req.isAuthenticated()) {
-                                            articleMD.query(`select count(*) as number from saved where id_user = '${req.user.id}' and id_article = ${id}`, (err, result) => {
-                                                res.render('reading', {article: article[0], newArticles, comments, moment, num: result[0].number, similar, user: req.user});
+                                            articleMD.query(`call CHECK_SAVED_ARTICLE_PROC('${req.user.id}', '${id}')`, (err, count) => {
+                                                res.render('reading', {article: article[0], newArticles, comments, moment, num: count[0][0].quantity, similar, user: req.user});
                                             })
                                         } else {
                                             res.render('reading', {article: article[0], newArticles, comments, moment, num: null, similar, user: null});
@@ -103,7 +105,7 @@ app.get('/*-:id',function(req,res) {
 
 app.get('/save',function(req,res) {
     if (req.isAuthenticated()){
-        articleMD.query(`insert into saved value ('${req.user.id}', ${req.query.id})`, (err, result) => {
+        articleMD.query(`select SAVE_ARTICLE_FN('${req.user.id}', ${req.query.id})`, (err, result) => {
             if (err)
                 console.log(err);
             else {
@@ -120,7 +122,7 @@ app.get('/save',function(req,res) {
 
 app.get('/unsave',function(req,res) {
     if (req.isAuthenticated()) {
-        articleMD.query(`delete from saved where id_user = '${req.user.id}' and id_article = ${req.query.id}`, function(err, result) {
+        articleMD.query(`select UNSAVE_ARTICLE_FN('${req.user.id}', ${req.query.id})`, function(err, result) {
             if (err) {
                 res.status(404).send('Bài viết không được tìm thấy!')
             } else {
@@ -136,16 +138,17 @@ app.get('/unsave',function(req,res) {
 app.post('/binhluan',function(req,res) {
     const id    = req.query.id,
         content = req.body.commentContent;
-    articleMD.query(`insert into comments (id_user, id_article, content, date) values ('${req.user.id}', ${id}, '${content}', NOW())`, err => {
+    articleMD.query(`select INSERT_INFO_COMMENT_FN('${req.user.id}', ${id}, '${content}')`, err => {
         if (err) console.log(err);
         else {
             // Update quantity comment of current user
-            articleMD.query(`update users set comment = comment + 1 where id = '${req.user.id}'`, err => {
+            articleMD.query(`select INCREASE_COMMENTS_CR_USER_FN('${req.user.id}')`, err => {
                 if (err) {console.log(err)}
                 req.user.comment += 1;
-                articleMD.query(`select comments.id, content, fullname, date from comments, users where comments.id_user = '${req.user.id}' and users.id = comments.id_user order by date desc limit 1`, (err, comment) => {
+                // Query the comment just is posted
+                articleMD.query(`call FIND_COMMENT_JUST_IS_POSTED_PROC('${req.user.id}')`, (err, comment) => {
                     //console.log(comment);
-                    res.status(200).json(comment[0]);
+                    res.status(200).json(comment[0][0]);
                     //res.redirect(req.session.url + '#commentArea');
                 })
             })
@@ -158,7 +161,7 @@ app.put('/editComment', (req, res) => {
     if (req.isAuthenticated()) {
         const id = req.query.id;
         const editedContent = req.body.editedContent;
-        articleMD.query(`update comments set content = '${editedContent}', editted = 1, date = NOW() where id = ${id}`, (err, result) => {
+        articleMD.query(`select UPDATE_INFO_COMMENT_FN('${editedContent}', ${id})`, (err, result) => {
             if (err) {
                 console.log(err);
             }
@@ -172,8 +175,7 @@ app.put('/editComment', (req, res) => {
 app.delete('/deleteComment', (req, res) => {
     if (req.isAuthenticated()) {
         const id = req.query.id;
-        const query = 'delete from comments where id = ' + id;
-        articleMD.query(query, (err, result) => {
+        articleMD.query(`select DELETE_COMMENT_FN(${id})`, (err, result) => {
             if (err) {
                 console.log(err);
             }
