@@ -121,7 +121,43 @@ ON DELETE CASCADE;
 ALTER TABLE saved ADD FOREIGN KEY (article_id) REFERENCES articles (id)
 ON DELETE CASCADE;
 
--- Trigger: for insert user and Article
+-- Trigger: for Insert Admin account and Delete Article
+-- Insert Admin account
+DELIMITER //
+CREATE TRIGGER BEFORE_INSERT_ADMIN_TG
+BEFORE INSERT ON admin
+FOR EACH ROW
+BEGIN
+	declare sum int;
+	select count(*) into sum
+    from admin 
+    where phone = NEW.phone 
+    or email = NEW.email 
+    or username = NEW.username;
+    if sum > 0 then
+		SIGNAL sqlstate '45001' set message_text = "Một vài thông tin đã tồn tại!";
+	end if;
+END //
+DELIMITER ;
+
+-- Delete Article
+DELIMITER //
+CREATE TRIGGER BEFORE_DELETE_ARTICLE_PASSWORD_TG
+BEFORE UPDATE ON users
+FOR EACH ROW
+BEGIN
+	declare sum int;
+	select count(*) into sum
+    from oldpassword 
+    where user_id = NEW.id
+    and old_password = NEW.password;
+    if sum = 0 then
+		insert into oldpassword (user_id, old_password) values (NEW.id, NEW.password);
+        
+	end if;
+END //
+DELIMITER ;
+
 -- Procedure: 
 -- Find new articles follow category
 DELIMITER //
@@ -175,6 +211,15 @@ DELIMITER //
 CREATE PROCEDURE FIND_ALL_USERS_PROC()
 BEGIN
 	SELECT * FROM users ORDER BY created;
+END //
+DELIMITER ;
+
+-- Select a Admin account
+DELIMITER //
+CREATE PROCEDURE FIND_ADMIN_BY_USERNAME_PROC
+(IN us varchar(6))
+BEGIN
+	select id, fullname, username, phone, email from admin where username = us;
 END //
 DELIMITER ;
 
@@ -423,6 +468,18 @@ CREATE FUNCTION DELETE_ARTICLE_FN(id int)
 RETURNS binary DETERMINISTIC
 BEGIN
 	delete from articles where articles.id = id;
+	RETURN true;
+END //
+DELIMITER ;
+
+select UPDATE_ARTICLE_FN(47, 'com', 'me');
+
+-- Delete Article Function
+DELIMITER //
+CREATE FUNCTION UPDATE_ARTICLE_FN(id int, title varchar(200), content text)
+RETURNS binary DETERMINISTIC
+BEGIN
+	update articles set articles.title = title, articles.content = content where articles.id = id;
 	RETURN true;
 END //
 DELIMITER ;

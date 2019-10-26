@@ -77,8 +77,14 @@ app.post('/addAdminAccount', function(req,res) {
 		email: req.body.email,
 		password: req.body.password
 	}
+	
 	adminMD.query(`select ADD_ADMIN_ACCOUNT_FN('${admin.fullname}', '${admin.phone}', '${admin.username}', '${admin.email}', '${admin.password}')`, (err, result) => {
-    	res.redirect('/admin');
+		if (err) {
+			res.status(201).json(err.sqlMessage);
+		}
+		else {
+			res.status(200).json(admin);
+		}
 	})
 });
 
@@ -91,7 +97,7 @@ app.get('/deleteAdmin',function(req,res) {
 
 app.get('/writing',function(req,res) {
     if (req.session.admin) {
-    	res.render('adminWriting', {admin: req.session.admin});
+    	res.render('adminWriting', {admin: req.session.admin, action: 'writting', article: {}});
     } else res.redirect('/admin');
 });
 
@@ -108,7 +114,7 @@ app.post('/writing', upload.single('file'), function(req,res) {
 	    adminMD.query(`select INSERT_ARTICLE_FN(${article.kind_id}, '${article.title}', '${article.titleurl}', '${article.imagelink}', '${article.content}')`, function(err, posts) {
 	    	if (err) {console.log(err);}
 	    	else {
-	    		res.render('adminWriting', {admin: req.session.admin});
+	    		res.render('adminWriting', {admin: req.session.admin, action: 'writting', article: {}});
 	    	}
 	    })
 	} else {
@@ -125,9 +131,11 @@ app.get('/accounts',function(req,res) {
 });
 
 app.get('/deleteUser',function(req,res) {
-    adminMD.query(`select DELETE_USER_FN('${req.query.id}')`, err => {
-    	res.redirect('Accounts');
-    })
+	if (req.session.admin) {
+    	adminMD.query(`select DELETE_USER_FN('${req.query.id}')`, err => {
+	    	res.redirect('Accounts');
+	    })
+	} else res.redirect('/admin');
 });
 
 app.get('/articles',function(req,res) {
@@ -138,14 +146,37 @@ app.get('/articles',function(req,res) {
 	} else res.redirect('/admin');
 });
 
+app.get('/updateArticle',function(req,res) {
+	if (req.session.admin) {
+		const id = req.query.id;
+	    adminMD.query(`call FIND_ARTICLE_INFO_PROC(${id})`, (err, article) => {
+	    	res.render('adminWriting', {admin: req.session.admin, action: 'updateArticle', article: article[0][0]});
+	    })
+	} else res.redirect('/admin');
+});
+
+app.post('/updateArticle', upload.single('file'), function(req,res) {
+	if (req.session.admin) {
+		const id = req.body.id,
+			title = req.body.title,
+			content = req.body.content;
+			
+	    adminMD.query(`select UPDATE_ARTICLE_FN(${id}, '${title}', '${content}')`, (err, result) => {
+	    	res.redirect('Articles');
+	    })
+	} else res.redirect('/admin');
+});
+
 app.post('/deleteArticle',function(req,res) {
-	const id = req.body.id;
-    adminMD.query(`select DELETE_ARTICLE_FN(${id})`, err => {
-    	if (err) {
-    		console.log(err);
-    	}
-    	res.redirect('Articles');
-    })
+	if (req.session.admin) {
+		const id = req.body.id;
+	    adminMD.query(`select DELETE_ARTICLE_FN(${id})`, err => {
+	    	if (err) {
+	    		console.log(err);
+	    	}
+	    	res.redirect('Articles');
+	    })
+    } else res.redirect('/admin');
 });
 
 app.get('/comments',function(req,res) {

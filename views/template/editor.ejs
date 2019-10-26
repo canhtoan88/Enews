@@ -4,46 +4,66 @@
 	}
 </style>
 <div class="container mt-3">
-	<form class="form-horizontal" action="writing" method="post" enctype="multipart/form-data">
+	<form class="form-horizontal" action="<%= action %>" method="post" enctype="multipart/form-data">
 		<input type="hidden" id="url3" name="url3" required/>
+		<% if (article) { %>
+			<input type="hidden" name="id" value="<%= article.id %>" />
+		<% } %>
+		
 		<div class="form-group row col-sm-12">
 			<label class="control-form-label col-sm-1">Tiêu đề:</label>
 		    <div class="col-sm-9 col-xs-9">
-		        <input type="text" name="title" class="form-control" required/>
+		        <input type="text" name="title" class="form-control" value="<%= article.title %>" required/>
 		    </div>
 		</div>
 		<div class="form-group row">
 			<label class="control-form-label col-sm-1">Loại tin tức:</label>
 		    <div class="col-sm-9 col-xs-9">
-		        <select class="form-control" name="kind" required>
-		        	<option value="0">Chọn loại tin tức...</option>
-					<option value="1">Công nghệ</option>
-					<option value="2">Bóng đá</option>
-					<option value="3">Du lịch</option>
-					<option value="4">Sức khoẻ</option>
-				</select>
+		    	<% if (article.kind_id) { %>
+		    		<select class="form-control" name="kind" disabled>
+			        	<option value="1"><%= article.kindname %></option>
+					</select>
+		    	<% } else { %>
+		    		<select class="form-control" name="kind" required>
+			        	<option value="0">Chọn loại tin tức...</option>
+						<option value="1">Công nghệ</option>
+						<option value="2">Bóng đá</option>
+						<option value="3">Du lịch</option>
+						<option value="4">Sức khoẻ</option>
+					</select>
+		    	<% } %>
 		    </div>
 		</div>
 		<div class="form-group row">
 			<label class="control-form-label col-sm-1">Hình ảnh:</label>
 			<div class="col-sm-9 col-xs-9">
-				<input type="file" name="file" accept="image/*" onchange="previewFile()" required/><br />
-				<img src="" height="200" alt="Hình ảnh xem trước ..." style="margin-bottom: 10px"/>
+				<input type="file" name="file" accept="image/*" onchange="previewFile()" <% if (article.id) { %>
+					disabled
+				<% } else { %>
+					required
+				<% } %>
+				/><br />
+				<img src="<%= article.imagelink %>" height="200" alt="Hình ảnh xem trước ..." style="margin-bottom: 10px"/>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="control-form-label col-sm-1">Nội dung:</label>
 			<div class="col-sm-9 col-xs-9">
-				<textarea name="content" id="editor" style="min-height: 400px"></textarea>
+				<textarea name="content" id="editor" style="min-height: 400px"><%= article.content %></textarea>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="control-form-label col-sm-1"></label>
 			<div class="col-sm-9 col-xs-9">
 				<center>
-					<button type="submit" class="btn btn-success">Đăng bài <i class="far fa-share-square"></i></button>
-					<!-- <button target="_blank" type="button" class="btn btn-success" onclick="send()">Xem trước nội dung <i class="far fa-search"></i></button> -->
-					<button type="reset" class="btn btn-success">Viết lại <i class="far fa-window-restore"></i></button>
+					<% if (article.id) { %>
+						<button type="submit" class="btn btn-success">Cập nhật</button>
+					<% } else { %>
+						<i class="fas fa-clock"></i>
+						<button type="submit" class="btn btn-success">Đăng bài</button>
+						<!-- <button target="_blank" type="button" class="btn btn-success" onclick="send()">Xem trước nội dung <i class="far fa-search"></i></button> -->
+						<button type="reset" class="btn btn-success">Viết lại</button>
+					<% } %>
 				</center>
 			</div>
 		</div>

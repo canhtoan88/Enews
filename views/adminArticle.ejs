@@ -121,7 +121,7 @@
                                         <td>
                                             <form action="deleteArticle" method="post">
                                                 <% if (admin.id == article.creater) { -%>
-                                                    <a href="admin/updateArticle"><input type='button' class="btn btn-success" value='Update'/></a>
+                                                    <a href="updateArticle?id=<%= article.id %>"><input type='button' class="btn btn-success" value='Update'/></a>
                                                     <input type="hidden" name="id" value="<%= article.id %>">
                                                     <input type='submit' class="btn btn-danger" value='Delete'/>
                                                 <% } -%>

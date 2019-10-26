@@ -10,7 +10,12 @@
     <link href="../css/material-dashboard.css?v=1.2.0" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet" type='text/css'//>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'/>
-    <title>Đăng tin tức</title>
+    <title><% if (article.id) { %>
+      Chỉnh sửa bài viết
+    <% } else { %>
+      Đăng tin tức
+    <% } %>
+    </title>
 </head>
 
 <body>
@@ -58,7 +63,10 @@
               <p>Thông báo</p>
             </a>
           </li>
-          <li class="active">
+          <li <% if (!article.id) { %>
+            class="active"
+          <% } %>
+          >
             <a href="Writing"> 
               <i class="material-icons">unarchive</i>
               <p>Viết bài mới</p>

@@ -99,12 +99,12 @@
                                 </div>
                                 <div class="card-content">
                                     <p class="category">Tài khoản</p>
-                                    <h3 class="title"><a href="AdminAccounts"><%= total.accounts %></a></h3>
+                                    <h3 class="title"><a href="Admin/Accounts"><%= total.accounts %></a></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
                                         <i class="material-icons text-danger">warning</i>
-                                        <a href="#"><%= total.newAccounts %> tài khoản mới</a>
+                                        <a href="Admin/Accounts"><%= total.newAccounts %> tài khoản mới</a>
                                     </div>
                                 </div>
                             </div>
@@ -116,12 +116,12 @@
                                 </div>
                                 <div class="card-content">
                                     <p class="category">Bài viết</p>
-                                    <h3 class="title"><a href="AdminPosts"><%= total.articles %></a></h3>
+                                    <h3 class="title"><a href="Admin/Articles"><%= total.articles %></a></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
                                         <i class="material-icons text-danger">warning</i>
-                                        <a href="#"><%= total.newArticles %> bài viết mới</a>
+                                        <a href="Admin/Articles"><%= total.newArticles %> bài viết mới</a>
                                     </div>
                                 </div>
                             </div>
@@ -133,12 +133,12 @@
                                 </div>
                                 <div class="card-content">
                                     <p class="category">Bình luận</p>
-                                    <h3 class="title"><a href="AdminComments"><%= total.comments %></a></h3>
+                                    <h3 class="title"><a href="Admin/Comments"><%= total.comments %></a></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
                                         <i class="material-icons text-danger">warning</i>
-                                        <a href="#"><%= total.newComments %> bình luận mới</a>
+                                        <a href="Admin/Comments"><%= total.newComments %> bình luận mới</a>
                                     </div>
                                 </div>
                             </div>
@@ -150,12 +150,12 @@
                                 </div>
                                 <div class="card-content">
                                     <p class="category">Lượt truy cập</p>
-                                    <h3 class="title"><a href="AdminAccesses"><%= total.views %></a></h3>
+                                    <h3 class="title"><a href="Admin/Views"><%= total.views %></a></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
                                         <i class="material-icons text-danger">warning</i>
-                                        <a href="#"><%= total.newViews %> lượt mới truy cập</a>
+                                        <a href="Admin/Views"><%= total.newViews %> lượt mới truy cập</a>
                                     </div>
                                 </div>
                             </div>
@@ -199,49 +199,51 @@
                     </div>
                     <br />
                     <div class="row">
-                      <div class="col-md-10 col-md-offset-1">
+                        <div class="col-md-10 col-md-offset-1">
                         <!-- form thêm tài khoản admin -->
-                    <form id="formAddAdmin" hidden action="admin/addAdminAccount" method="post" class="form-horizontal animate">
-                      <legend> Thông tin tài khoản </legend>
-                      <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label">Tên đăng nhập</label>
-                  <div class="col-md-4  inputGroupContainer">
-                    <input name="username" placeholder="Enter username" class="form-control" type="text" required/>
-                  </div>
-                </div>
-                <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label">Mật khẩu</label>
-                  <div class="col-md-4  inputGroupContainer">
-                    <input name="password" placeholder="Enter password" class="form-control" type="text" required/>
-                  </div>
-                </div>
-                <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label">Họ và Tên</label>
-                  <div class="col-md-4  inputGroupContainer">
-                    <input name="fullname" placeholder="Enter fullname" class="form-control" type="text" required/>
-                  </div>
-                </div>
-                <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label">Số điện thoại</label>
-                  <div class="col-md-4  inputGroupContainer">
-                    <input name="phone" placeholder="Enter numberphone" class="form-control" type="tel" minlength="10" maxlength="11" required/>
-                  </div>
-                </div>
-                <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label">Email</label>
-                  <div class="col-md-4  inputGroupContainer">
-                    <input name="email" placeholder="Enter email" class="form-control" type="email" required/>
-                  </div>
-                </div>
-                <div class="form-group" class='col-md-8 col-md-offset-2'>
-                  <label class="col-md-4 control-label"></label>
-                  <div class="col-md-2 col-md-offset-1  inputGroupContainer">
-                    <button type="submit" class="btn btn-success"> Thêm <span class="glyphicon glyphicon-send"></span>
-                  </button>
-                  </div>
-                </div>
-                    </form>
-              </div>
+                        <!-- action="admin/addAdminAccount" method="post" -->
+                            <form id="formAddAdmin" onsubmit="addAdmin(event)" hidden class="form-horizontal animate">
+                                <legend> Thông tin tài khoản </legend>
+                                <center id="notify"></center>
+                                <div class="form-group" class='col-md-8 col-md-offset-2'>
+                                    <label class="col-md-4 control-label">Tên đăng nhập</label>
+                                    <div class="col-md-4  inputGroupContainer">
+                                        <input name="username" placeholder="Enter username" class="form-control" type="text" required/>
+                                    </div>
+                                </div>
+                            <div class="form-group" class='col-md-8 col-md-offset-2'>
+                              <label class="col-md-4 control-label">Mật khẩu</label>
+                              <div class="col-md-4  inputGroupContainer">
+                                <input name="password" placeholder="Enter password" class="form-control" type="text" required/>
+                              </div>
+                            </div>
+                            <div class="form-group" class='col-md-8 col-md-offset-2'>
+                              <label class="col-md-4 control-label">Họ và Tên</label>
+                              <div class="col-md-4  inputGroupContainer">
+                                <input name="fullname" placeholder="Enter fullname" class="form-control" type="text" required/>
+                              </div>
+                            </div>
+                            <div class="form-group" class='col-md-8 col-md-offset-2'>
+                              <label class="col-md-4 control-label">Số điện thoại</label>
+                              <div class="col-md-4  inputGroupContainer">
+                                <input name="phone" placeholder="Enter numberphone" class="form-control" type="tel" minlength="10" maxlength="11" required/>
+                              </div>
+                            </div>
+                            <div class="form-group" class='col-md-8 col-md-offset-2'>
+                              <label class="col-md-4 control-label">Email</label>
+                              <div class="col-md-4  inputGroupContainer">
+                                <input name="email" placeholder="Enter email" class="form-control" type="email" required/>
+                              </div>
+                            </div>
+                            <div class="form-group" class='col-md-8 col-md-offset-2'>
+                              <label class="col-md-4 control-label"></label>
+                              <div class="col-md-2 col-md-offset-1  inputGroupContainer">
+                                <button type="submit" class="btn btn-success"> Thêm <span class="glyphicon glyphicon-send"></span>
+                              </button>
+                              </div>
+                            </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -257,6 +259,8 @@
   <!-- Material Dashboard javascript methods -->
   <script src="js/material-dashboard.js?v=1.2.0"></script>
   <script type="text/javascript" src="js/bootstrap-table.js"></script>
+
+  <script src="js/admin.js" type="text/javascript" charset="utf-8" async defer></script>
   
   <script type="text/javascript">
     $(document).ready(function(){
