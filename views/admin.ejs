@@ -55,7 +55,9 @@
           <li>
             <a href="Admin/Notification"> 
               <i class="material-icons text-gray">notifications</i>
-              <p>Thông báo</p>
+              <p>Thông báo <% if (total.notifies != 0) { -%>
+                  <span class="label label-danger"><%= total.notifies %></span>
+              <% } -%></p>
             </a>
           </li>
           <li class="active-pro">
@@ -163,39 +165,44 @@
                     </div>
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1">
-                      <div class="fresh-table">
-                          <div class="toolbar">
-                              <button class="btn btn-default" disabled="disabled">Danh sách tài khoản admin: <%= admins.length + 1 %></button>
-                              <a href="#formAddAdmin"><button class="btn btn-default" id="addAdmin">+ Thêm</button></a>
+                          <div class="fresh-table">
+                              <div class="toolbar">
+                                  <button class="btn btn-default" disabled="disabled">Danh sách tài khoản admin: <%= admins.length + 1 %></button>
+                                  <% if (admin.id === 1) { -%>
+                                    <a href="#formAddAdmin"><button class="btn btn-default" id="addAdmin">+ Thêm</button></a>
+                                  <% } -%>
+                                  
+                              </div>
+                              <table id="fresh-table" class="table">
+                                  <thead>
+                                    <tr>
+                                        <th data-field="id" data-sortable="true">ID</th>
+                                        <th data-field="name" data-sortable="true">Name</th>
+                                        <th data-field="salary" data-sortable="true">Username</th>
+                                        <th data-field="country" data-sortable="true">Number phone</th>
+                                        <th data-field="city" data-sortable="true">Email</th>
+                                        <th data-field="actions">Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  <% for (admin of admins) { -%>
+                                      <tr>
+                                        <td><%= admin.id %></td>
+                                        <td><%= admin.fullname %></td>
+                                        <td><%= admin.username %></td>
+                                        <td><%= admin.phone %></td>
+                                        <td><%= admin.email %></td>
+                                        <td>
+                                            <% if (admin.id !== 1) { -%>
+                                                <a href="admin/deleteAdmin?id=<%= admin.id %>"><input type='submit' class="btn btn-danger" value='Delete'/></a>
+                                            <% } -%>
+                                        </td>
+                                      </tr>
+                                  <% } -%>
+                                  </tbody>
+                              </table>
                           </div>
-                          <table id="fresh-table" class="table">
-                              <thead>
-                                <tr>
-                                    <th data-field="id" data-sortable="true">ID</th>
-                                    <th data-field="name" data-sortable="true">Name</th>
-                                    <th data-field="salary" data-sortable="true">Username</th>
-                                    <th data-field="country" data-sortable="true">Number phone</th>
-                                    <th data-field="city" data-sortable="true">Email</th>
-                                    <th data-field="actions">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                              <% for (admin of admins) { -%>
-                                  <tr>
-                                    <td><%= admin.id %></td>
-                                    <td><%= admin.fullname %></td>
-                                    <td><%= admin.username %></td>
-                                    <td><%= admin.phone %></td>
-                                    <td><%= admin.email %></td>
-                                    <td>
-                                        <a href="admin/deleteAdmin?id=<%= admin.id %>"><input type='submit' class="btn btn-danger" value='Delete'/></a>
-                                    </td>
-                                  </tr>
-                              <% } -%>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
+                        </div>
                     </div>
                     <br />
                     <div class="row">

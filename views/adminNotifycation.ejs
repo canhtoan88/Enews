@@ -10,7 +10,13 @@
     <link href="../css/material-dashboard.css?v=1.2.0" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet" type='text/css'//>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'/>
-    <title>Quản lý truy cập</title>
+    <style type="text/css" media="screen">
+        .notifiesNoRead {
+            font-weight: bold; 
+            cursor: pointer;
+        }
+    </style>
+    <title>Quản lý thông báo</title>
 </head>
 
 <body>
@@ -46,13 +52,13 @@
               <p>Quản lý bình luận</p>
             </a>
           </li>
-          <li class="active">
+          <li>
               <a href="Views">
                   <i class="material-icons">bubble_chart</i>
                   <p>Quản lý truy cập</p>
               </a>
           </li>
-          <li>
+          <li class="active">
             <a href="Notification"> 
               <i class="material-icons text-gray">notifications</i>
               <p>Thông báo <% if (noReadNotifies != 0) { -%>
@@ -87,78 +93,42 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">Quản lý truy cập</a>
+                        <a class="navbar-brand" href="#">Quản lý thông báo</a>
                     </div>
                 </div>
             </nav>
             <div class="content">
                 <div class="container-fluid">
-                    <div class="col-md-8 col-md-offset-2 text-center">
-                        <div class="row">
-                            <h3 class="text-uppercase text-warning" href="#"><label>TOP Users</label></h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label>STT</label>
-                            </div>
-                            <div class="col-md-3">
-                                <label>User ID</label>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Fullname</label>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Views</label>
-                            </div>
-                        </div>
-                        <% for (let i = 0; i < topViews.length; i++) { -%>
-                            <hr>
-                            <div class="row <% if (i == 0) { -%>
-                                text-danger
-                            <% } else if (i == 1){ -%>
-                                text-success
-                            <% } else { -%>
-                                text-info
-                            <% } -%>">
-                                <div class="col-md-2">
-                                    <label class="date3"><%= i+1 %></label>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="date3"><%= topViews[i].id %></label>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="date3"><%= topViews[i].fullname %></label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="date3"><%= topViews[i].sum %></label>
-                                </div>
-                            </div>
-                        <% } -%>
-                    </div>
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1">
                           <div class="fresh-table">
                               <div class="toolbar">
-                                  <button class="btn btn-default" disabled="disabled">Tất cả lượt xem: <%= views.length %></button>
+                                  <button class="btn btn-default" disabled="disabled">Danh sách thông báo: <%= notifies.length %></button>
+                                  <button class="btn btn-default" onclick="readAllNotifies()" <% if (notifies.length === 0) { -%>
+                                    disabled
+                                  <% } -%>>Chưa đọc: <span id="numNo"><%= noReadNotifies %></span></button>
+                                  <a href="deleteAllNotify" class="btn btn-danger" <% if (notifies.length === 0) { -%>
+                                    disabled
+                                  <% } -%>>Làm sạch</span></a>
                               </div>
                               <table id="fresh-table" class="table">
                                   <thead>
                                     <tr>
-                                        <th data-field="id" data-sortable="true">STT</th>
-                                        <th data-field="name" data-sortable="true">User ID</th>
-                                        <th data-field="salary" data-sortable="true">User</th>
-                                        <th data-field="country" data-sortable="true">Article</th>
-                                        <th data-field="city" data-sortable="true">Date</th>
+                                        <th data-field="id" data-sortable="true">ID</th>
+                                        <th data-field="name" data-sortable="true">Content</th>
+                                        <th data-field="country" data-sortable="true">Day</th>
                                     </tr>
                                   </thead>
                                   <tbody>
-                                  <% for (let i = 0; i < views.length; i++) { -%>
+                                  <% for (notify of notifies) { -%>
                                       <tr>
-                                        <td><%= i + 1 %></td>
-                                        <td><%= views[i].id %></td>
-                                        <td><%= views[i].fullname %></td>
-                                        <td><%= views[i].title.slice(0, 25) %>...</td>
-                                        <td><%= moment(views[i].date).calendar() %></td>
+                                        <td><%= notify.id %></td>
+                                        <td><span <% if (notify.state == 0) { %>
+                                            class="notifiesNoRead"
+                                            onclick="readNotify(this)"
+                                        <% } %>
+                                        ><%= notify.content %></span></td>
+                                        <td><%= moment(notify.created).calendar() %></td>
                                       </tr>
                                   <% } -%>
                                   </tbody>
@@ -258,6 +228,56 @@
                     '<i class="fa fa-remove"></i>',
                 '</a>'
             ].join('');
+        }
+
+        function readNotify(e) {
+            // Change state this notify
+            const id = e.parentNode.parentNode.childNodes[0].textContent;
+            fetch('readnotify?id=' + id, {
+                method: 'GET'
+            })
+            .then(result => {
+                if (result.status === 200) {
+                    // Remove text bold style
+                    // e.parentNode.parentNode.childNodes[1].childNodes[0].style.fontWeight = 'initial';
+                    e.classList.remove('notifiesNoRead')
+
+                    // Update total notifies don't read yet
+                    const totalNotifies = document.querySelector('.label');
+                    if (totalNotifies.textContent != 1) {
+                      
+                        document.querySelector('#numNo').textContent = totalNotifies.textContent = +totalNotifies.textContent - 1;
+                    } else {
+                        totalNotifies.remove();
+                        document.querySelector('#numNo').textContent = 0;
+                        document.querySelectorAll('.btn-default')[1].disabled = true;
+                    }
+                }
+            })
+            .catch(err => console.log(err))
+        }
+
+        function readAllNotifies() {
+            fetch('readAllNotifies', {
+                method: 'GET'
+            })
+            .then(result => {
+                if (result.status === 200) {
+                    // Remove text bold style
+                    const notifiesNoRead = document.querySelectorAll('.notifiesNoRead');
+                    for (let i=0; i < notifiesNoRead.length; i++) {
+                        notifiesNoRead[i].classList.remove('notifiesNoRead');
+                    }
+
+                    //
+                    document.querySelector('#numNo').textContent = 0;
+                    document.querySelectorAll('.btn-default')[1].disabled = true;
+
+                    // Update total notifies don't read yet
+                    document.querySelector('.label').remove();
+                }
+            })
+            .catch(err => console.log(err))
         }
     </script>
 </body>

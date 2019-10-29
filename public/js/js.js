@@ -16,16 +16,17 @@ const deleteComment = (btn) => {
 }
 
 // Edit Comment
-const editComment = (btn) => {
+const editComment = (btn, admin_id) => {
     const actionComment = btn.parentNode.parentNode//.childNodes[2].nextSibling;
     const areaComment = actionComment.parentNode;
     const article_id = areaComment.childNodes[0].nextSibling.id;
     const contentComment = areaComment.childNodes[2].nextSibling.textContent.trim();
-
+console.log(admin_id);
     //
     const commentEditBox = `
         <div class="form-group text-right">
             <textarea onkeypress="enterEditComment(this, event)" class="form-control" name="eidtContent" rows="4" placeholder="Nhập nội dung bình luận ..." maxlength="300">${contentComment}</textarea>
+            <input type="hidden" name="admin_id" value="${admin_id}">
             <span>
                 <b>----------Chỉnh sửa bình luận----------</b>
                 <input id="cancelEditComment" onClick="cancelEditComment(this, ${article_id})" class="btn btn-warning" style="margin: 10px 0" type="button" value="Huỷ"/>
@@ -41,7 +42,7 @@ const editComment = (btn) => {
 function enterEditComment (i, e) {
     if (e.keyCode == 10 || e.keyCode == 13) {
         e.preventDefault();
-        ix.disabled = true;
+        i.disabled = true;
         document.querySelector('#enterEditComment').click();
         document.querySelector('#enterEditComment').disabled = true;
         document.querySelector('#cancelEditComment').disabled = true;
@@ -51,7 +52,8 @@ function enterEditComment (i, e) {
 // Post edit comment
 function postEditComment (btn, id) {
     const editedContent = btn.parentNode.parentNode.childNodes[0].nextSibling.value;
-    fetch('editComment?id=' + id, {
+    const admin_id = btn.parentNode.parentNode.childNodes[3].value;
+    fetch(`editComment?id=${id}&admin_id=${admin_id}`, {
         method: "PUT",
         headers: {
             'Accept': 'application/json',
@@ -90,7 +92,8 @@ const insertComment = (btn) => {
         return;
     }
     const id = btn.parentNode.parentNode.querySelector('[name="article_id"]').value;
-    fetch('binhluan?id=' + id, {
+    const admin_id = btn.parentNode.parentNode.querySelector('[name="admin_id"]').value;
+    fetch(`binhluan?id=${id}&admin_id=${admin_id}`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -111,7 +114,7 @@ const insertComment = (btn) => {
                     <sup>
                         <input type="hidden" name="comment_id" value="${comment.id}">
                         <button class="btn btn-link" onClick="deleteComment(this)">Xóa</button> ||
-                        <button class="btn btn-link" onclick="editComment(this)">Chỉnh sửa</button>
+                        <button class="btn btn-link" onclick="editComment(this, ${admin_id})">Chỉnh sửa</button>
                     </sup>
                 </p>
                 <p style="padding: 0 20px">&emsp;&emsp;${comment.content}</p>
@@ -133,16 +136,18 @@ const insertComment = (btn) => {
 
 void function triggerButtonClick () {
     const textAreaComment = document.querySelector('[name="commentContent"]')
-    textAreaComment.addEventListener('keypress', (e) => {
-        if (e.keyCode === 10 || e.keyCode === 13) {
-            e.preventDefault();
-            const bntInsert = document.querySelector('#btnInsertComment');
-            bntInsert.click();
-            // Disable button post comment
-            textAreaComment.disabled = true;
-            bntInsert.disabled = true;
-        }
-    })
+    if (textAreaComment) {
+        textAreaComment.addEventListener('keypress', (e) => {
+            if (e.keyCode === 10 || e.keyCode === 13) {
+                e.preventDefault();
+                const bntInsert = document.querySelector('#btnInsertComment');
+                bntInsert.click();
+                // Disable button post comment
+                textAreaComment.disabled = true;
+                bntInsert.disabled = true;
+            }
+        })
+    }
 }()
 
 function save (e) {

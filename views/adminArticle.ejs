@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="icon" href="img/icon.png">
+    <link rel="icon" href="../img/icon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link href="../css/fresh-bootstrap-table.css" rel="stylesheet" />
     <link href="../css/material-dashboard.css?v=1.2.0" rel="stylesheet" />
@@ -55,7 +55,9 @@
           <li>
             <a href="Notification"> 
               <i class="material-icons text-gray">notifications</i>
-              <p>Thông báo</p>
+              <p>Thông báo <% if (noReadNotifies != 0) { -%>
+                  <span class="label label-danger"><%= noReadNotifies %></span>
+              <% } -%></p>
             </a>
           </li>
           <li>
@@ -97,6 +99,7 @@
                               <div class="toolbar">
                                   <button class="btn btn-default" disabled="disabled">Danh sách bài viết tin tức: <%= articles.length %></button>
                               </div>
+                              <center class="text-danger"><%= error %></center>
                               <table id="fresh-table" class="table">
                                   <thead>
                                     <tr>
@@ -120,9 +123,10 @@
                                         <td><%= article.creater %></td>
                                         <td>
                                             <form action="deleteArticle" method="post">
-                                                <% if (admin.id == article.creater) { -%>
+                                                <% if (admin.id === article.creater || admin.id === 1) { -%>
                                                     <a href="updateArticle?id=<%= article.id %>"><input type='button' class="btn btn-success" value='Update'/></a>
                                                     <input type="hidden" name="id" value="<%= article.id %>">
+                                                    <input type="hidden" name="kind_id" value="<%= article.kind_id %>">
                                                     <input type='submit' class="btn btn-danger" value='Delete'/>
                                                 <% } -%>
                                             </form>

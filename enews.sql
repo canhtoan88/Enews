@@ -24,6 +24,8 @@ CREATE TABLE users (
     created datetime default NOW()
 );
 
+alter table users modify email varchar(32) not null unique;
+
 -- Kind of artilces
 CREATE TABLE kind (
     id int PRIMARY KEY AUTO_INCREMENT,
@@ -115,11 +117,21 @@ CREATE TABLE saved (
     user_id CHARACTER(10) not null,
     article_id int not null
 );
-
 ALTER TABLE saved ADD FOREIGN KEY (user_id) REFERENCES users (id)
 ON DELETE CASCADE;
 ALTER TABLE saved ADD FOREIGN KEY (article_id) REFERENCES articles (id)
 ON DELETE CASCADE;
+
+CREATE TABLE notifies (
+	id int primary key auto_increment,
+    content varchar(500) not null,
+    state boolean default 0,
+    admin_id int not null,
+    created datetime default NOW()
+);
+ALTER TABLE notifies ADD FOREIGN KEY (admin_id) REFERENCES admin (id)
+ON DELETE CASCADE;
+
 
 -- Trigger: for Insert Admin account and Delete Article
 -- Insert Admin account
@@ -232,6 +244,15 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Select Admin account
+DELIMITER //
+CREATE PROCEDURE FIND_ADMIN_BY_ID_PROC
+(IN id int)
+BEGIN
+	select * from admin where admin.id = id;
+END //
+DELIMITER ;
+
 -- Select all admins
 DELIMITER //
 CREATE PROCEDURE FIND_ADMINS_PROC(IN us varchar(6))
@@ -255,7 +276,7 @@ DELIMITER //
 CREATE PROCEDURE FIND_ARTICLE_INFO_PROC
 (IN article_id int)
 BEGIN
-	SELECT articles.id, kind_id, title, titleurl, imagelink, content, date, kindname, kindurl 
+	SELECT articles.id, kind_id, title, titleurl, imagelink, content, creater, date, kindname, kindurl 
 	FROM articles, kind
 	WHERE articles.id = article_id
 	AND kind.id = articles.kind_id;
@@ -266,7 +287,7 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE FIND_ALL_ARTICLES_PROC()
 BEGIN
-	SELECT articles.id, title, views, date, kindname, creater
+	SELECT articles.id, articles.kind_id, title, views, date, kindname, creater
 	FROM articles, kind
 	WHERE kind.id = articles.kind_id
     ORDER BY date;
@@ -365,6 +386,15 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Check saved article
+DELIMITER //
+CREATE PROCEDURE FIND_TOTAL_ARTICLES_PROC
+(IN kind_id int)
+BEGIN
+	select count(*) as total from articles where articles.kind_id = kind_id;
+END //
+DELIMITER ;
+
 -- Select the comment just is posted
 DELIMITER //
 CREATE PROCEDURE FIND_COMMENT_JUST_IS_POSTED_PROC
@@ -399,6 +429,17 @@ BEGIN
     order by views.date desc;
 END //
 DELIMITER ;
+call FIND_ALL_NOTIFYCATIONS_PROC(1);
+drop PROCEDURE FIND_ALL_NOTIFYCATIONS_PROC;
+-- Select users viewed articles
+DELIMITER //
+CREATE PROCEDURE FIND_ALL_NOTIFYCATIONS_PROC(IN id int)
+BEGIN
+	select * from notifies
+    where admin_id = id
+    order by state;
+END //
+DELIMITER ;
 
 -- Select users viewed articles
 DELIMITER //
@@ -412,6 +453,20 @@ BEGIN
     group by views.user_id
     order by sum desc
     limit 5;
+END //
+DELIMITER ;
+
+drop procedure COUNT_NOTIFY_DONT_READ_YET_PROC;
+-- Count notification don't read yet
+
+DELIMITER //
+CREATE PROCEDURE COUNT_NOTIFY_DONT_READ_YET_PROC
+(IN id int)
+BEGIN
+	select count(*) as total
+    from notifies 
+    where notifies.admin_id = id
+    and state = 0;
 END //
 DELIMITER ;
 
@@ -453,11 +508,11 @@ DELIMITER ;
 -- Insert Article Function
 DELIMITER //
 CREATE FUNCTION INSERT_ARTICLE_FN 
-(kind_id int, title varchar(200), titleurl varchar(100), imagelink varchar(100), content text)
+(kind_id int, title varchar(200), titleurl varchar(100), imagelink varchar(100), content text, creater int)
 RETURNS binary DETERMINISTIC
 BEGIN
-	INSERT INTO articles (kind_id, title, titleurl, imagelink, content, views, date) 
-    VALUES (kind_id, title, titleurl, imagelink, content, 0, NOW());
+	INSERT INTO articles (kind_id, title, titleurl, imagelink, content, views, creater, date) 
+    VALUES (kind_id, title, titleurl, imagelink, content, 0, creater, NOW());
 	RETURN true;
 END //
 DELIMITER ;
@@ -502,6 +557,24 @@ RETURNS binary DETERMINISTIC
 BEGIN
 	delete from saved where saved.user_id = user_id and saved.article_id = article_id;
 	RETURN true;
+END //
+DELIMITER ;
+
+-- Check views from current user for article
+DELIMITER //
+CREATE FUNCTION CHECK_VIEWS_ARTICLE_FN
+(user_id char(10), article_id int)
+RETURNS boolean DETERMINISTIC
+BEGIN
+	declare quantity int;
+	select count(*) into quantity 
+    from views 
+    where views.user_id = user_id 
+    and views.article_id = article_id;
+    IF quantity = 0
+		then RETURN 0;
+		ELSE RETURN 1;
+    END IF;
 END //
 DELIMITER ;
 
@@ -645,8 +718,70 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Add notification
+DELIMITER //
+CREATE FUNCTION ADD_NOTIFY_FN
+(content varchar(500), admin_id int)
+RETURNS boolean DETERMINISTIC
+BEGIN
+	INSERT INTO notifies (content, admin_id) 
+    VALUES (content, admin_id);
+    RETURN true;
+END //
+DELIMITER ;
+
+-- Read notification
+DELIMITER //
+CREATE FUNCTION READ_NOTIFY_FN
+(id int)
+RETURNS boolean DETERMINISTIC
+BEGIN
+	UPDATE notifies SET state = 1 WHERE notifies.id = id;
+    RETURN true;
+END //
+DELIMITER ;
+
+-- Read all notification
+DELIMITER //
+CREATE FUNCTION READ_ALL_NOTIFIES_FN(id int)
+RETURNS boolean DETERMINISTIC
+BEGIN
+	UPDATE notifies SET state = 1 WHERE admin_id = id;
+    RETURN true;
+END //
+DELIMITER ;
+
+-- Read all notification
+DELIMITER //
+CREATE FUNCTION DELETE_ALL_NOTIFIES_FN(id int)
+RETURNS boolean DETERMINISTIC
+BEGIN
+	DELETE FROM notifies WHERE admin_id = id;
+    RETURN true;
+END //
+DELIMITER ;
+
+-- Create login user to authenticate database
+DELIMITER //
+CREATE FUNCTION CREATE_LOGIN_USER_FN
+(username char(6))
+RETURNS boolean DETERMINISTIC
+BEGIN
+	create user username@'localhost' identified by 'Canhtoan88';
+    grant select on enews.* to username@'localhost';
+    grant delete on enews.users to username@'localhost';
+    grant insert, update, delete on enews.articles to username@'localhost';
+    grant delete on enews.comments to username@'localhost';
+    grant select on enews.views to username@'localhost';
+    RETURN true;
+END //
+DELIMITER ;
+
 -- Insert 4 kind
 INSERT INTO kind (kindname, kindurl) VALUES ('Công nghệ', 'cong-nghe');
 INSERT INTO kind (kindname, kindurl) VALUES ('Bóng đá', 'bong-da');
 INSERT INTO kind (kindname, kindurl) VALUES ('Du lịch', 'du-lich');
 INSERT INTO kind (kindname, kindurl) VALUES ('Sức khoẻ', 'suc-khoe');
+
+ALTER USER 'canhtoan88'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Canhtoan88';
+grant select, execute on enews.* to 'canhtoan88'@'localhost';

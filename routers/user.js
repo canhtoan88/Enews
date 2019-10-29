@@ -171,50 +171,31 @@ app.post('/dangky', (req, res) => {
 		password	: bcrypt.hashPassword(req.body.password),
 		email 		: req.body.username
 	}
+
 	// Check email or phone is existing
 	// Can use findOrCreate
-	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${user.email}')`, function(err, result) {
-		if (err) {console.log(err);}
+	userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '${user.password}', '${user.fullname}')`, function(err, result) {
+		if (err) {
+			errSignup = 'Email đã được đăng ký ở một tài khoản khác';
+			res.redirect('/dangky');
+		}
 		else {
-			if (result[0][0]) {
-				errSignup = 'Email đã được đăng ký ở một tài khoản khác';
-				res.redirect('/dangky');
-			} else {
-				// insert into users values ('${user.id}', '${user.email}', '${user.password}', '${user.fullname}', 0, 0, 0)
-				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '${user.password}', '${user.fullname}')`, function(err, result) {
-					if (err) {console.log(err);}
-					else {
-						// Message and receiver
-						/*const mailOption = {
-							sender: 'Enews',
-							to: user.email,
-							subject: 'Xác thực tài khoản',
-							template: 'mail-confirm',
-							context: {
-								url: `${config.get('host')}/xacthuc-${user._id}`,
-								name: user.fullname
-							}
-						}*/
-
-						// Message config
-						const mailOption = {
-							sender: 'Enews',
-							to: user.email,
-							subject: 'Xác thực tài khoản',
-							html: `<h3>Click vào <a href="${config.get('host')}/xacthuc-${user.id}">đây</a> để xác thực tài khoản</h3>`
-						}
-						// Send mail
-						mailer.sendMail(mailOption, function(err, info) {
-							if (err) {
-								console.log(err);
-							} else {
-								//console.log(info.response);
-							}
-						})
-						res.render('sitemove', {content: 'Một <a href="https://mail.google.com" target="blank">email</a> xác thực đã gửi vào hộp thư của bạn!'});
-					}
-				})
+			// Message config
+			const mailOption = {
+				sender: 'Enews',
+				to: user.email,
+				subject: 'Xác thực tài khoản',
+				html: `<h3>Click vào <a href="${config.get('host')}/xacthuc-${user.id}">đây</a> để xác thực tài khoản</h3>`
 			}
+			// Send mail
+			mailer.sendMail(mailOption, function(err, info) {
+				if (err) {
+					console.log(err);
+				} else {
+					//console.log(info.response);
+				}
+			})
+			res.render('sitemove', {content: 'Một <a href="https://mail.google.com" target="blank">email</a> xác thực đã gửi vào hộp thư của bạn!'});
 		}
 	})
 });
@@ -302,7 +283,7 @@ app.get('/thongtintaikhoan-:tab-:id', (req, res) => {
 					res.render('profile', {user: req.user, changeInfo, tab, saved: null});
 			})
 		} else {
-			res.redirect('/thongtintaikhoan-' + req.user.id);
+			res.redirect('/thongtintaikhoan-' + tab + '-' + req.user.id);
 		}
 	} else {
 		res.redirect('/dangnhap');

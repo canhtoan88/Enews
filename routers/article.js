@@ -19,83 +19,75 @@ app.get('/*-:id',function(req,res) {
         else {
             if (article[0][0]) {
                 article[0] = article[0][0];
-                // Set views for current user
-                if (req.isAuthenticated()) {
-                    articleMD.query(`select CHECK_VIEWS_ARTICLE_FN('${req.user.id}', ${id}) as seen`, (err, result) => {
-                        if (err)
-                            console.log(err);
-                        else {
-                            if (result[0].seen == 0) {
-                                articleMD.query(`select INCREASE_VIEWS_CR_USER_FN('${req.user.id}')`, err => {
-                                    if (err)
-                                        console.log(err);
-                                })
-                                articleMD.query(`select SET_USER_VIEW_ARTICLE_FN('${req.user.id}', ${id})`, err => {
-                                    if (err)
-                                        console.log(err);
-                                })
-                            }
-                        }
-                        // Increase 1 view for current user
-                        req.user.views += 1;
-                    })
-                }
-
-                // Save current article's id into cookie
-                /*if (cookie.parse(req.headers.cookie).seenArticles) {
-                    let strSeenArticles = cookie.parse(req.headers.cookie).seenArticles;
-                    let arrSeenArticles = strSeenArticles.split('')
-                    console.log(typeof arrSeenArticles);
-                    arrSeenArticles.push(id);
-                    res.setHeader('Set-Cookie', `seenArticles=${JSON.stringify(arrSeenArticles)}`)
-                    console.log(cookie.parse(req.headers.cookie).seenArticles);
-                } else {
-                    res.setHeader('Set-Cookie', 'seenArticles=[]');
-                }*/
-
-                // Get similar articles
-                articleMD.query(`call FIND_SIMILAR_ARTICLES_PROC(${id}, ${article[0].kind_id})`, (err, similar) => {
-                    if (similar[0].length > 0) {
-                        similar = similar[0];
-                        req.session.url = req.originalUrl;
-
-                        // Set view for this article
-                        var myTimeout = setTimeout(() => {
-                            articleMD.query(`select INCREASE_VIEWS_ARTICLE_FN(${id})`, err => {
-                                if (err) {console.log(err);}
-                            })
-                        }, 0);
-
-                        // Get comments
-                        articleMD.query(`call FIND_COMMENTS_PROC(${id})`, (err, comments) => {
-                            if (err) console.log(err);
+                if (article[0].titleurl === req.url.slice(1, req.url.lastIndexOf('-'))) {
+                    // Set views for current user
+                    if (req.isAuthenticated()) {
+                        articleMD.query(`select CHECK_VIEWS_ARTICLE_FN('${req.user.id}', ${id}) as seen`, (err, result) => {
+                            if (err)
+                                console.log(err);
                             else {
-                                // Check comments
-                                if (comments[0].length == 0) {
-                                    comments = null;
-                                } else comments = comments[0];
-
-                                // Get the most new articles
-                                articleMD.query(`call FIND_6_OTHER_LASTEST_ARTICLES_PROC(${id})`, (err, newArticles) => {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        newArticles = newArticles[0];
-                                        // Check current user have been saved article
-                                        if (req.isAuthenticated()) {
-                                            articleMD.query(`call CHECK_SAVED_ARTICLE_PROC('${req.user.id}', '${id}')`, (err, count) => {
-                                                res.render('reading', {article: article[0], newArticles, comments, moment, num: count[0][0].quantity, similar, user: req.user});
-                                            })
-                                        } else {
-                                            res.render('reading', {article: article[0], newArticles, comments, moment, num: null, similar, user: null});
-                                        }
-                                    }
-                                })
+                                if (result[0].seen == 0) {
+                                    articleMD.query(`select INCREASE_VIEWS_CR_USER_FN('${req.user.id}')`, err => {
+                                        if (err)
+                                            console.log(err);
+                                    })
+                                    articleMD.query(`select SET_USER_VIEW_ARTICLE_FN('${req.user.id}', ${id})`, err => {
+                                        if (err)
+                                            console.log(err);
+                                    })
+                                }
                             }
+                            // Increase 1 view for current user
+                            req.user.views += 1;
                         })
-                    } else
-                        res.render('reading', {article: article[0], moment, num: null, similar, user: null});
-                })
+                    }
+
+                    // Get similar articles
+                    articleMD.query(`call FIND_SIMILAR_ARTICLES_PROC(${id}, ${article[0].kind_id})`, (err, similar) => {
+                        if (similar[0].length > 0) {
+                            similar = similar[0];
+                            req.session.url = req.originalUrl;
+
+                            // Set view for this article
+                            var myTimeout = setTimeout(() => {
+                                articleMD.query(`select INCREASE_VIEWS_ARTICLE_FN(${id})`, err => {
+                                    if (err) {console.log(err);}
+                                })
+                            }, 0);
+
+                            // Get comments
+                            articleMD.query(`call FIND_COMMENTS_PROC(${id})`, (err, comments) => {
+                                if (err) console.log(err);
+                                else {
+                                    // Check comments
+                                    if (comments[0].length == 0) {
+                                        comments = null;
+                                    } else comments = comments[0];
+
+                                    // Get the most new articles
+                                    articleMD.query(`call FIND_6_OTHER_LASTEST_ARTICLES_PROC(${id})`, (err, newArticles) => {
+                                        if (err) {
+                                            console.log(err);
+                                        } else {
+                                            newArticles = newArticles[0];
+                                            // Check current user have been saved article
+                                            if (req.isAuthenticated()) {
+                                                articleMD.query(`call CHECK_SAVED_ARTICLE_PROC('${req.user.id}', '${id}')`, (err, count) => {
+                                                    res.render('reading', {article: article[0], newArticles, comments, moment, num: count[0][0].quantity, similar, user: req.user});
+                                                })
+                                            } else {
+                                                res.render('reading', {article: article[0], newArticles, comments, moment, num: null, similar, user: null});
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        } else
+                            res.render('reading', {article: article[0], moment, num: null, similar, user: null});
+                    })
+                } else {
+                    res.redirect('/baiviet/' + article[0].titleurl + '-' + article[0].id)
+                }
             } else {
                 res.status(404).send('Bài viết không được tìm thấy');
             }
@@ -137,6 +129,7 @@ app.get('/unsave',function(req,res) {
 
 app.post('/binhluan',function(req,res) {
     const id    = req.query.id,
+        admin_id= req.query.admin_id,
         content = req.body.commentContent;
     articleMD.query(`select INSERT_INFO_COMMENT_FN('${req.user.id}', ${id}, '${content}')`, err => {
         if (err) console.log(err);
@@ -147,9 +140,12 @@ app.post('/binhluan',function(req,res) {
                 req.user.comment += 1;
                 // Query the comment just is posted
                 articleMD.query(`call FIND_COMMENT_JUST_IS_POSTED_PROC('${req.user.id}')`, (err, comment) => {
-                    //console.log(comment);
+                    // Add notify for admin
+                    const content = `${req.user.fullname} đã bình luận bài viết ${id}`
+                    articleMD.query(`select ADD_NOTIFY_FN('${content}', ${admin_id})`, err => {
+                        if (err) {console.log(err)}
+                    })
                     res.status(200).json(comment[0][0]);
-                    //res.redirect(req.session.url + '#commentArea');
                 })
             })
         }
@@ -160,11 +156,16 @@ app.post('/binhluan',function(req,res) {
 app.put('/editComment', (req, res) => {
     if (req.isAuthenticated()) {
         const id = req.query.id;
+        const admin_id = req.query.admin_id;
         const editedContent = req.body.editedContent;
         articleMD.query(`select UPDATE_INFO_COMMENT_FN('${editedContent}', ${id})`, (err, result) => {
             if (err) {
                 console.log(err);
             }
+            const content = `${req.user.fullname} đã chỉnh sửa bình luận ${id}`
+            articleMD.query(`select ADD_NOTIFY_FN('${content}', ${admin_id})`, err => {
+                if (err) {console.log(err)}
+            })
             res.status(200).json(result);
         })
     } else {

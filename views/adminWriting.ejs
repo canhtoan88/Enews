@@ -60,7 +60,9 @@
           <li>
             <a href="Notification"> 
               <i class="material-icons text-gray">notifications</i>
-              <p>Thông báo</p>
+              <p>Thông báo <% if (noReadNotifies != 0) { -%>
+                  <span class="label label-danger"><%= noReadNotifies %></span>
+              <% } -%></p>
             </a>
           </li>
           <li <% if (!article.id) { %>

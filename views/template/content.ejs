@@ -40,7 +40,7 @@
 									<sup>
 										<input type="hidden" name="comment_id" value="<%=comment.comment_id%>">
 										<button class="btn btn-link" onclick="deleteComment(this)">Xóa</button> ||
-										<button class="btn btn-link" onclick="editComment(this)">Chỉnh sửa</button>
+										<button class="btn btn-link" onclick="editComment(this, <%= article.creater %>)">Chỉnh sửa</button>
 									</sup>
 								<%}-%>
 							<%}-%>
@@ -58,6 +58,7 @@
 				<!--<form id="comment" action="/baiviet/binhluan/<= article.id %>" method="post">-->
 				    <div class="form-group text-right">
 						<input type="hidden" name="article_id" value="<%= article.id%>">
+						<input type="hidden" name="admin_id" value="<%= article.creater%>">
 				    	<textarea class="form-control" name="commentContent" rows="4" placeholder="Nhập nội dung bình luận ..." maxlength="300"></textarea>
 				    	<span>
 				    		<input id="btnInsertComment" onClick="insertComment(this)" class="btn btn-success" style="margin: 10px 0" type="button" value="Đăng bình luận"/>
@@ -138,5 +139,5 @@
 
 <script>
 	const kinds = document.querySelectorAll('.kind');
-	kinds[<%= article.kind %> - 1].classList.add('active');
+	kinds[<%= article.kind_id %> - 1].classList.add('active');
 </script>

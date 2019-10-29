@@ -3,7 +3,7 @@
 	"saltRound": 10,
 	"mysql": {
 		"host": "localhost",//"www.db4free.net",
-		"user": "root",
+		"user": "canhtoan88",
 		"password": "Canhtoan88",
 		"database": "enews"
 	}
