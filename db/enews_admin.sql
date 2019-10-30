@@ -30,7 +30,7 @@ CREATE TABLE `admin` (
   `email` varchar(64) DEFAULT NULL,
   `password` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` VALUES (1,'Nguyễn Cảnh Toàn','0585798788','admin1','admin1@gmail.com','123'),(2,'Nguyễn Đức Thắng','0123456789','admin2','admin2@gmail.com','123');
+INSERT INTO `admin` VALUES (1,'Nguyễn Cảnh Toàn','0585798788','admin','adminroot@gmail.com','Canhtoan88'),(44,'Nguyễn Cảnh Toàn','0967244736','admin1','nctt96@gmail.com','Enews123');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-21 13:16:50
+-- Dump completed on 2019-10-30  7:45:02
