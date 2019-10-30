@@ -429,8 +429,7 @@ BEGIN
     order by views.date desc;
 END //
 DELIMITER ;
-call FIND_ALL_NOTIFYCATIONS_PROC(1);
-drop PROCEDURE FIND_ALL_NOTIFYCATIONS_PROC;
+
 -- Select users viewed articles
 DELIMITER //
 CREATE PROCEDURE FIND_ALL_NOTIFYCATIONS_PROC(IN id int)
@@ -456,7 +455,6 @@ BEGIN
 END //
 DELIMITER ;
 
-drop procedure COUNT_NOTIFY_DONT_READ_YET_PROC;
 -- Count notification don't read yet
 
 DELIMITER //
@@ -526,8 +524,6 @@ BEGIN
 	RETURN true;
 END //
 DELIMITER ;
-
-select UPDATE_ARTICLE_FN(47, 'com', 'me');
 
 -- Delete Article Function
 DELIMITER //
