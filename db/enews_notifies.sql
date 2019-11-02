@@ -31,7 +31,7 @@ CREATE TABLE `notifies` (
   PRIMARY KEY (`id`),
   KEY `admin_id` (`admin_id`),
   CONSTRAINT `notifies_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `admin` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,6 @@ CREATE TABLE `notifies` (
 
 LOCK TABLES `notifies` WRITE;
 /*!40000 ALTER TABLE `notifies` DISABLE KEYS */;
-INSERT INTO `notifies` VALUES (65,'Cảnh Toàn đã bình luận bài viết 59',0,44,'2019-10-29 21:43:47');
 /*!40000 ALTER TABLE `notifies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-30  7:45:01
+-- Dump completed on 2019-11-02 12:02:53

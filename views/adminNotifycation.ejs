@@ -143,6 +143,57 @@
     </div>
   
     <% include template/admin-script %>
+    <script>
+        function readNotify(e) {
+            // Change state this notify
+            const id = e.parentNode.parentNode.childNodes[0].textContent;
+            fetch('readnotify?id=' + id, {
+                method: 'GET'
+            })
+            .then(result => {
+                if (result.status === 200) {
+                    // Remove text bold style
+                    // e.parentNode.parentNode.childNodes[1].childNodes[0].style.fontWeight = 'initial';
+                    e.classList.remove('notifiesNoRead')
+
+                    // Update total notifies don't read yet
+                    const totalNotifies = document.querySelector('.label');
+                    if (totalNotifies.textContent != 1) {
+                      
+                        document.querySelector('#numNo').textContent = totalNotifies.textContent = +totalNotifies.textContent - 1;
+                    } else {
+                        totalNotifies.remove();
+                        document.querySelector('#numNo').textContent = 0;
+                        document.querySelectorAll('.btn-default')[1].disabled = true;
+                    }
+                }
+            })
+            .catch(err => console.log(err))
+        }
+
+        function readAllNotifies() {
+            fetch('readAllNotifies', {
+                method: 'GET'
+            })
+            .then(result => {
+                if (result.status === 200) {
+                    // Remove text bold style
+                    const notifiesNoRead = document.querySelectorAll('.notifiesNoRead');
+                    for (let i=0; i < notifiesNoRead.length; i++) {
+                        notifiesNoRead[i].classList.remove('notifiesNoRead');
+                    }
+
+                    //
+                    document.querySelector('#numNo').textContent = 0;
+                    document.querySelectorAll('.btn-default')[1].disabled = true;
+
+                    // Update total notifies don't read yet
+                    document.querySelector('.label').remove();
+                }
+            })
+            .catch(err => console.log(err))
+        }
+    </script>
 </body>
 
 </html>

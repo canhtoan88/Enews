@@ -28,13 +28,13 @@ CREATE TABLE `comments` (
   `article_id` int(11) DEFAULT NULL,
   `content` varchar(300) DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `edited` binary(1) DEFAULT '0',
+  `edited` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `article_id` (`article_id`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,6 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (21,'vmkpdnbafs',18,'Bình luận','2019-10-27 23:46:47',_binary '0'),(22,'vmkpdnbafs',42,'Bài viết hay quá','2019-10-29 19:42:42',_binary '0'),(23,'vmkpdnbafs',59,'Bình luận','2019-10-29 21:43:47',_binary '0'),(24,'vmkpdnbafs',4,'Haizz','2019-10-29 21:43:59',_binary '0');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-30  7:45:03
+-- Dump completed on 2019-11-02 12:02:54

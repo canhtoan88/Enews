@@ -257,8 +257,16 @@
             <%include template/adminfooter %>
         </div>
     </div>
-  
     <% include template/admin-script %>
+    <script src="js/admin.js" type="text/javascript" charset="utf-8" async defer></script>
+  
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $("#addAdmin").click(function(){
+              $("#formAddAdmin").show();
+          });
+        });
+    </script>
 </body>
 
 </html>

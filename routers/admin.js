@@ -254,6 +254,7 @@ app.get('/accounts',function(req,res) {
 app.get('/deleteUser',function(req,res) {
 	if (req.session.admin) {
     	adminMD.query(`select DELETE_USER_FN('${req.query.id}')`, err => {
+    		if (err) {console.log(err)}
 	    	res.redirect('Accounts');
 	    })
 	} else res.redirect('/admin');
@@ -276,11 +277,11 @@ app.get('/updateArticle',function(req,res) {
 	if (req.session.admin) {
 		const id = req.query.id;
 	    adminMD.query(`call FIND_ARTICLE_INFO_PROC(${id})`, (err, article) => {
-	    	if (article[0][0].creater === req.session.admin.id) {
+	    	if (article[0][0].creater === req.session.admin.id || req.session.admin.id === 1) {
 	    		// Count notifies don't read yet
 				adminMD.query(`call COUNT_NOTIFY_DONT_READ_YET_PROC(${req.session.admin.id})`, (err, result) => {
 					const noReadNotifies = result[0][0].total;
-		    		res.render('adminWriting', {admin: req.session.admin, action: 'updateArticle', article: article[0][0], noReadNotifies});
+		    		res.render('adminWriting', {admin: req.session.admin, action: 'updateArticle', article: article[0][0], noReadNotifies, notify: ''});
 					error = '';
 				})
 	    	} else {

@@ -116,7 +116,7 @@
                                   <% for (article of articles) { -%>
                                       <tr>
                                         <td><%= article.id %></td>
-                                        <td><%= article.title.slice(0, 30) %></td>
+                                        <td><a href="/baiviet/url-<%= article.id %>" target="_blank"><%= article.title.slice(0, 30) %></a></td>
                                         <td><%= article.kindname %></td>
                                         <td><%= article.views %></td>
                                         <td><%= moment(article.date).calendar() %></td>

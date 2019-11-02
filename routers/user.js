@@ -201,8 +201,9 @@ app.post('/dangky', (req, res) => {
 });
 
 app.get('/xacthuc-:id', (req, res) => {
-	userMD.query(`select * from users where id = '${req.params.id}'`, function(err, result) {
-		if (result[0]) {
+	userMD.query(`call FIND_USER_BY_ID_PROC('${req.params.id}')`, function(err, result) {
+		if (result[0][0]) {
+			result[0] = result[0][0];
 			if (result[0].state == 1) {
 				res.json('Yêu cầu xác thực không thành công do tài khoản đã được xác thực từ trước!');
 			} else {

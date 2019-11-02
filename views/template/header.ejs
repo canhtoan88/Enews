@@ -1,14 +1,14 @@
 <link rel="stylesheet" href="/css/style.css">
 <div class="container">
     <div class="row">
+        <div class="text-info" id="about"></div>
         <div class="ml-auto m-1">
-            <a href="thongtin" class="mr-3">Giới thiệu <i class="fas fa-info-circle"></i></a>
+            <a href="#" onclick="startAbout()" class="mr-3">Giới thiệu <i class="fas fa-info-circle"></i></a>
             <% if (user) { %>
               <a id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i><%=user.fullname %></i></a>
   						<div class="dropdown-menu" aria-labelledby="profile">
   							<a href="/thongtintaikhoan-0-<%= user.id%>" class="btn dropdown-item">Thông tin tài khoản</a>
-  							<a href="/dangbai/1" class="btn dropdown-item">Đăng bài</a>
-  							<a href="/dangbai/2" class="btn dropdown-item">Đăng nhu cầu</a>
+  							<a href="admin/writing" class="btn dropdown-item" target="_blank">Đăng bài</a>
   							<div class="dropdown-divider"></div>
   							<a class="btn dropdown-item" href="/dangxuat">Đăng xuất</a>
   						</div>
@@ -19,3 +19,23 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    const info  = 'Enews - Chuyên website tin tức - Đa dạng thể loại! Hot nhất 2019 <3';
+    let temp    = 0;
+        speed   = 50;
+    function startAbout() {
+        if (temp === -1) {
+            document.querySelector('#about').textContent = '';
+            temp++;
+        }
+        if (temp < info.length) {
+            document.querySelector('#about').textContent += info.charAt(temp);
+            temp++;
+            setTimeout(startAbout, speed--);
+        } else {
+            temp = -1;
+            speed += info.length;
+        }
+    }
+</script>
