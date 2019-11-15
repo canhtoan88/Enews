@@ -91,15 +91,12 @@ passport.use(new FacebookStrategy({
 		fullname: profile.displayName,
 		email: profile._json.email
 	}
-	if (user.email) {
-		res.render('dangnhap', {errSignin: 'Đăng nhập thất bại', remember: null});
-	}
 	userMD.query(`call FIND_USER_BY_EMAIL_PROC('${user.email}')`, (err, result) => {
 		if (err) {
 			console.log(err);
 		} else {
-			if (result.length > 0) {
-				cb(null, result[0]);
+			if (result[0].length > 0) {
+				cb(null, result[0][0]);
 			} else {
 				user.id = uid(10);
 				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
@@ -130,11 +127,11 @@ passport.use(new GoogleStrategy({
 		if (err) {
 			console.log(err);
 		} else {
-			if (result.length > 0) {
-				cb(null, result[0]);
+			if (result[0].length > 0) {
+				cb(null, result[0][0]);
 			} else {
 				user.id = uid(10);
-				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '', '${user.fullname}', 0, 1, 0)`, (err) => {
+				userMD.query(`select INSERT_USER_FN('${user.id}', '${user.email}', '', '${user.fullname}')`, (err) => {
 					if (err) {
 						console.log(err);
 					} else {

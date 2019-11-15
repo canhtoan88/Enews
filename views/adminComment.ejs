@@ -115,7 +115,7 @@
                                       <tr>
                                         <td><%= comment.id %></td>
                                         <td><%= comment.user_id %></td>
-                                        <td><%= comment.article_id %></td>
+                                        <td><a href="/baiviet/baiviet-<%= comment.article_id %>" target="_blank" title="Bài viết 30"><%= comment.article_id %></a></td>
                                         <td><%= comment.content %></td>
                                         <td><%= moment(comment.date).calendar() %></td>
                                         <td>
