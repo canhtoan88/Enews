@@ -33,7 +33,10 @@ app.get('/*-:id',function(req,res) {
                                     })
                                     articleMD.query(`select SET_USER_VIEW_ARTICLE_FN('${req.user.id}', ${id})`, err => {
                                         if (err)
-                                            console.log(err);
+                                            if (err.errno === 1452) {
+                                                // Logout
+                                                req.logout();
+                                            }
                                     })
                                 }
                             }
@@ -89,7 +92,7 @@ app.get('/*-:id',function(req,res) {
                     res.redirect('/baiviet/' + article[0].titleurl + '-' + article[0].id)
                 }
             } else {
-                res.status(404).send('Bài viết không được tìm thấy');
+                res.render('sitemove', {content: 'Không tìm thấy bài viết!', image: '../img/lake.jpg'});
             }
         }
     })

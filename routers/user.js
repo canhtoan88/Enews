@@ -192,7 +192,7 @@ app.post('/dangky', (req, res) => {
 					//console.log(info.response);
 				}
 			})
-			res.render('sitemove', {content: 'Một <a href="https://mail.google.com" target="blank">email</a> xác thực đã gửi vào hộp thư của bạn!'});
+			res.render('sitemove', {content: 'Một <a href="https://mail.google.com" target="blank">email</a> xác thực đã gửi vào hộp thư của bạn!', image: 'img/lake.jpg'});
 		}
 	})
 });
@@ -202,17 +202,17 @@ app.get('/xacthuc-:id', (req, res) => {
 		if (result[0][0]) {
 			result[0] = result[0][0];
 			if (result[0].state == 1) {
-				res.json('Yêu cầu xác thực không thành công do tài khoản đã được xác thực từ trước!');
+				res.render('sitemove', {content: 'Yêu cầu xác thực không thành công do tài khoản đã được xác thực từ trước!', image: 'img/lake.jpg'});
 			} else {
 				// update users set state = 1 where id = '${result[0].id}'
 				userMD.query(`select VERIFY_USER_FN('${result[0].id}')`, (err) => {
 				if (req.isAuthenticated())
 					req.session.passport.user.state = true;
-				res.render('sitemove', {content: 'Tài khoản đã được xác thực!'});
+				res.render('sitemove', {content: 'Tài khoản đã được xác thực!', image: 'img/lake.jpg'});
 			})
 			}
 		} else {
-			res.render('sitemove', {content: 'Tài khoản cần xác thực không được tìm thấy!'});
+			res.render('sitemove', {content: 'Tài khoản cần xác thực không được tìm thấy!', image: 'img/lake.jpg'});
 		}
 	})
 });
@@ -242,7 +242,7 @@ app.post('/quenmatkhau', (req, res) => {
 					if (err) {
 						console.log(err);
 					} else {
-						res.render('sitemove', {content: 'Vui lòng kiểm tra email để nhập mật khẩu mới!'});
+						res.render('sitemove', {content: 'Vui lòng kiểm tra email để nhập mật khẩu mới!', image: 'img/lake.jpg'});
 					}
 				})
 			}
@@ -263,7 +263,7 @@ app.post('/caplaimatkhau', (req, res) => {
 		if (err) {
 			console.log(err);
 		} else {
-			res.render('sitemove', {content: 'Cấp lại mật khẩu thành công!'});
+			res.render('sitemove', {content: 'Cấp lại mật khẩu thành công!', image: 'img/lake.jpg'});
 		}
 	})
 });
