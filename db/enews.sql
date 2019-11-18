@@ -11,7 +11,6 @@ CREATE TABLE admin (
     email varchar(64),
     password varchar(32)
 );
-INSERT INTO admin (fullname, phone, username, email, password) VALUES ('Nguyễn Cảnh Toàn', '0585798788', 'admin', 'adminroot@gmail.com', '123');
 
 -- User's info table
 CREATE TABLE users (
