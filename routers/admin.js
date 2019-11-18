@@ -72,8 +72,9 @@ app.post('/', async function(req,res) {
 		username = user;
 		password = 'Enews' + req.body.password;
 	}
-
-	adminMD = await adminConnectMD(user, password);
+	if (!adminMD) {
+		adminMD = await adminConnectMD(user, password);
+	}
 
 	adminMD.query(`call FIND_ADMIN_PROC('${username}', '${password}')`, (err, admin) => {
 		if (admin && admin[0][0]){

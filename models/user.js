@@ -1,6 +1,17 @@
 const mysql = require('mysql');
 const config = require('config');
 
+const connection = mysql.createConnection({
+  host    : config.get('mysql.host'),
+  user    : config.get('mysql.user'),
+  password  : config.get('mysql.password'),
+  database  : config.get('mysql.database')
+})
+
+connection.connect();
+
+module.exports = connection;
+
 /*const connection = mysql.createConnection({
 	user: process.env.SQL_USER,
   	password: process.env.SQL_PASSWORD,
@@ -20,8 +31,8 @@ if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production
 });*/
 
 // For Google Cloud SQL
-const connection = mysql.createConnection({
-	//socketPath  : '/cloudsql/enews-237900:us-east1:enews-mysql',
+/*const connection = mysql.createConnection({
+	socketPath  : '/cloudsql/enews-237900:us-east1:enews-mysql',
 	host 		: config.get('mysql.host'),
 	user 		: config.get('mysql.user'),
 	password 	: config.get('mysql.password'),
@@ -30,4 +41,4 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-module.exports = connection;
+module.exports = connection;*/
