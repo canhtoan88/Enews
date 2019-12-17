@@ -7,10 +7,10 @@ moment.locale('vi');
 const upload = require('../helper/uploadfile');
 const slug = require('../helper/slug');
 
-//const adminMD	= require('../models/user');
+const adminMD	= require('../models/db4free');
 const adminConnectMD 	= require('../models/admin');
 
-let adminMD, error = '', notify = '';
+let error = '', notify = '';
 
 app.get('/',function(req,res) {
 	if (req.session.admin) {
@@ -38,7 +38,7 @@ app.get('/',function(req,res) {
 		adminMD.query(`select * from totalComments`, (err, totalComments) => {
 			total.comments = totalComments[0].sumComments;
 		})
-		adminMD.query(`select * from newComments`, (err, newComments) => {
+		adminMD.query(`select * from newComments`,  (err, newComments) => {
 			total.newComments = newComments[0].sum;
 		})
 		// Select total and new views
@@ -117,7 +117,7 @@ app.post('/addAdminAccount', function(req,res) {
 				}
 				else {
 					// Phân quyền cho Admin
-					adminMD.query(`CREATE USER '${admin.username}'@'localhost' IDENTIFIED BY '${admin.password}'`, async err => {
+					/*adminMD.query(`CREATE USER '${admin.username}'@'localhost' IDENTIFIED BY '${admin.password}'`, async err => {
 						if (err) {
 							adminMD.rollback(() => {
 								throw err;
@@ -144,7 +144,7 @@ app.post('/addAdminAccount', function(req,res) {
 								throw err;
 							})
 						}
-					});
+					});*/
 					adminMD.commit(err => {
 						if (err) {
 							adminMD.rollback(() => {

@@ -105,7 +105,7 @@ WHERE created > (date_add(curdate(), INTERVAL '-7' DAY));
 CREATE VIEW totalComments AS
 SELECT COUNT(*) AS sumComments FROM comments;
 -- View: New comments for adminitrator
-CREATE VIEW newcomments AS
+CREATE VIEW newComments AS
 SELECT count(*) AS sum FROM comments
 WHERE date > (date_add(curdate(), INTERVAL '-7' DAY));
 

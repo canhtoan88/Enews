@@ -1,11 +1,17 @@
 {
-	"host": "https://localhost:3000", //https://enews-237900.appspot.com
+	"host": "https://enewsvn.herokuapp.com", //https://enews-237900.appspot.com
 	"saltRound": 10,
-	"mysql": {
+	"mysqlLocal": {
 		"host": "localhost",//"www.db4free.net",
 		"user": "canhtoan88",
 		"password": "Canhtoan88",
 		"database": "enews"
+	},
+	"mysql": {
+		"host": "www.db4free.net",
+		"user": "dtdm_enews07",
+		"password": "enewsdtdm",
+		"database": "enews07"
 	}
 }
 /*"mysql": {
