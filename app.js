@@ -49,5 +49,5 @@ app.use((req, res, next) => {
     res.render('template/notfound');
 });
 
-server.listen(port);
-//app.listen(port);
+//server.listen(port);
+app.listen(port);
