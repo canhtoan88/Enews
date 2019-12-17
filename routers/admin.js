@@ -82,7 +82,6 @@ app.post('/', async function(req,res) {
 			res.redirect('admin');
 		} else {
 			adminMD.end();
-			adminMD = null;
 			res.redirect('admin');
 		}
 	})
@@ -92,7 +91,6 @@ app.get('/logout',function(req,res) {
 	if (req.session.admin && adminMD) {
 	    req.session.admin = null;
 	    adminMD.end();
-		adminMD = null;
 	    res.redirect('/admin');
 	} else res.redirect('/admin');
 });
