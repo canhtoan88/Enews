@@ -5,6 +5,13 @@ module.exports = (res, checkArticleExist, user, userMD) => {
 	// Declare articles array
     var allArticles = [];
 
+    // Update datetime to now of articles
+    user.query(`update articles set date = now() where now() - date < 30`, err => {
+    	if (err) {
+    		console.log(err);
+    	}
+    });
+
     // Get articles follow category Công nghệ
     userMD.query(`call FIND_ARTICLES_FOLLOW_CATEGORY_PROC(1)`, (err, article_kind1) => {
     	if (err) {

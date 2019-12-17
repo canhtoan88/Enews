@@ -1,5 +1,5 @@
 {
-	"host": "https://enewsvn.herokuapp.com", //https://enews-237900.appspot.com
+	"host": "https://localhost:3000",//"https://enewsvn.herokuapp.com", //https://enews-237900.appspot.com
 	"saltRound": 10,
 	"mysqlLocal": {
 		"host": "localhost",//"www.db4free.net",
