@@ -6,7 +6,7 @@ module.exports = (res, checkArticleExist, user, userMD) => {
     var allArticles = [];
 
     // Update datetime to now of articles
-    user.query(`update articles set date = now() where now() - date < 30`, err => {
+    userMD.query(`update articles set date = now() where now() - date < 30`, err => {
     	if (err) {
     		console.log(err);
     	}
